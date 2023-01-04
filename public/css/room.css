@@ -1,0 +1,13 @@
+button {
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    width: 90px;
+    height: 40px;
+    outline-width: 3px;
+    border-radius: 10px;
+    /* background-color: rgba(229, 229, 224, 1); */
+    background-image: url("/img/background.jpg");
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
+    align-self: center;
+}

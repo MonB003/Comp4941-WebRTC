@@ -1,0 +1,80 @@
+body {
+    margin: 0px;
+    font-family: fantasy;
+    font-weight: lighter;
+    background-image: url("/img/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+nav {
+    margin: 10px;
+}
+h1 {
+    text-align: center;
+}
+
+
+#main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#form {
+    padding: 2%;
+    margin: 5%;
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    outline-width: 3px;
+    border-radius: 15px;
+    background-color: rgba(239, 239, 240, 0.8);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
+}
+input {
+    /* width: 70%; */
+    padding: 12px 20px;
+    margin: 5%;
+    box-sizing: border-box;
+    outline-width: 3px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
+}
+button {
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    width: 50%;
+    height: 2%;
+    outline-width: 3px;
+    border-radius: 10px;
+    /* background-color: rgba(229, 229, 224, 1); */
+    background-image: url("/img/background.jpg");
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
+    align-self: center;
+}
+
+.lbutton a:link, a:visited {
+    color: white;
+    padding: 20%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    outline-width: 3px;
+    border-radius: 15px;
+    background-color: rgba(229, 229, 224, 1);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
+}
+
+a.lbutton a:hover, a:active {
+    background-color: rgba(0, 0, 0, 0.354);
+    outline-width: 3px;
+    border-radius: 15px;
+    background-color: rgba(229, 229, 224, 1);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.3);
+}
