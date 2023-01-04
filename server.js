@@ -65,8 +65,8 @@ app.use(session({
 
 
 
-// const connection = mysql.createPool(database);
-const connection = mysql.createPool(process.env.JAWSDB_URL);
+const connection = mysql.createPool(database);
+// const connection = mysql.createPool(process.env.JAWSDB_URL);
 
 
 
