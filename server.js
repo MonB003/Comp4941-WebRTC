@@ -17,6 +17,31 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 
+
+
+
+// MySQL connection setup
+const is_heroku = process.env.IS_HEROKU || false;
+var database = {
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "WebRTC4941",
+    multipleStatements: true
+};
+
+if (is_heroku) {
+    database = {
+        host: "l0ebsc9jituxzmts.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+        user: "hrcxdlv5xmoghmeb",
+        password: "hdqp8fvof2lew0x3",
+        database: "pfj2kx53xzemm6n9",
+        multipleStatements: true
+    };
+}
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -39,13 +64,7 @@ app.use(session({
 }));
 
 
-var database = {
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "WebRTC4941",
-    multipleStatements: true
-};
+
 const connection = mysql.createPool(database);
 
 
@@ -102,8 +121,8 @@ io.on('connection', socket => {
 
             console.log("SERVER SEND")
             io.to(roomId).emit('send-message-to-group', screenVideo);
-    
-            
+
+
             // let urlPath = window.location.pathname;
             // let roomString = "/room/"
             // console.log(urlPath);
@@ -519,7 +538,7 @@ app.post('/update-call-status', function (req, res) {
         function (recordReturned) {
             console.log("UPDATE CALL IN DB SERVER FUNCTION")
             console.log(JSON.stringify(recordReturned));
-            
+
             if (recordReturned != null) {
                 console.log("CALL IN DB");
                 console.log("RECORD ID: " + recordReturned.id)
@@ -626,13 +645,37 @@ async function setupDatabase() {
     let connection;
     let createDatabaseTables;
 
-    connection = await mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "",
-        multipleStatements: true
-    });
-    createDatabaseTables = `CREATE DATABASE IF NOT EXISTS WebRTC4941;
+
+    if (is_heroku) {
+        connection = await mysql.createConnection({
+            host: "l0ebsc9jituxzmts.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+            user: "hrcxdlv5xmoghmeb",
+            password: "hdqp8fvof2lew0x3",
+            database: "pfj2kx53xzemm6n9",
+            multipleStatements: true
+        });
+        createDatabaseTables = `CREATE DATABASE IF NOT EXISTS pfj2kx53xzemm6n9;
+        use pfj2kx53xzemm6n9;
+        CREATE TABLE IF NOT EXISTS users(
+        id int NOT NULL AUTO_INCREMENT, 
+        username VARCHAR(20) NOT NULL,  
+        password VARCHAR(30) NOT NULL, 
+        PRIMARY KEY (id));
+            
+            CREATE TABLE IF NOT EXISTS videocalls(
+                id int NOT NULL AUTO_INCREMENT, 
+                callID VARCHAR(40) NOT NULL,    
+                status VARCHAR(10) NOT NULL, 
+                PRIMARY KEY (id));`;
+    } else {
+
+        connection = await mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "",
+            multipleStatements: true
+        });
+        createDatabaseTables = `CREATE DATABASE IF NOT EXISTS WebRTC4941;
         use WebRTC4941;
         CREATE TABLE IF NOT EXISTS users(
         id int NOT NULL AUTO_INCREMENT, 
@@ -645,6 +688,7 @@ async function setupDatabase() {
                 callID VARCHAR(40) NOT NULL,    
                 status VARCHAR(10) NOT NULL, 
                 PRIMARY KEY (id));`;
+    }
 
     // Creates a table for user profiles and item posts
     await connection.query(createDatabaseTables);
