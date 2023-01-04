@@ -66,7 +66,7 @@ app.use(session({
 
 
 const connection = mysql.createPool(database);
-
+connection.connect();
 
 
 
