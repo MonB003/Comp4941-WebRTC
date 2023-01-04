@@ -696,6 +696,6 @@ async function setupDatabase() {
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-    setupDatabase();
+    // setupDatabase();
     console.log("Listening on port " + port);
 });
