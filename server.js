@@ -402,10 +402,10 @@ function validateUser(username, password, callback) {
         function (error, results) {
 
             if (error) {
-                res.send({
-                    status: "Fail",
-                    msg: "Error finding the user."
-                });
+                // res.send({
+                //     status: "Fail",
+                //     msg: "Error finding the user."
+                // });
             }
             if (results.length > 0) {
                 // username and password found
