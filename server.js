@@ -25,6 +25,10 @@ app.use(express.static('public'));
 const server = http.createServer(app);
 const io = new Server(server);
 
+
+
+
+
 app.get('/room/:roomId', (req, res) => {
     res.sendFile(`${__dirname}/public/room.html`);
 });
@@ -173,7 +177,9 @@ app.post('/authenticate', (req, res) => {
 app.post('/adduser', (req, res) => {
     console.log(req.body.password);
     bcrypt.hash(req.body.password, 8).then((element) => {
+        // User.create({ email: req.body.email, password: element })
         User.create({ email: req.body.email, password: element })
+
     })
     res.status(200).json({
         success: true,
