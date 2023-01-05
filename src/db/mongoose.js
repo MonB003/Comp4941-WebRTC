@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb+srv://admin:WebRTC123$@cluster0.fdbdkdb.mongodb.net/test', {
+// mongodb+srv://admin:<password>@cluster0.i1ubgrw.mongodb.net/test
+// password: 1HoY7VICevfUI4KI
+mongoose.connect('mongodb+srv://admin:1HoY7VICevfUI4KI@cluster0.i1ubgrw.mongodb.net/test', {
     useNewUrlParser: true,
 })
 
