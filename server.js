@@ -12,8 +12,8 @@ app.use(express.json())
 
 const path = require('path');
 
-// const User = require('./src/models/model')
-const User = require('./src/models/model')();
+const User = require('./src/models/model')
+// const User = require('./src/models/model')();
 
 require('./src/db/mongoose')
 app.use(express.static('./public'));
