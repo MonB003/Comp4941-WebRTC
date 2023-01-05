@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Messaging</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS style -->
+    <link rel="stylesheet" href="/css/message.css" />
+</head>
+
+<body>
+
+    <h1 id="thisUsername"></h1>
+
+    <button id="backButton">Back</button>
+
+    <div id="allMessagesDiv">
+        <!-- Message list (all past and current messages) -->
+        <div id="allMessages"></div>
+    </div>
+
+    <!-- Message form -->
+    <div id="messageDiv">
+        <form id="messageForm" action="">
+            <input id="messageInput" placeholder="Type message" maxlength="300" autocomplete="off" />
+            <button id="sendMessageBtn">Send</button>
+        </form>
+    </div>
+
+
+    <!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script> -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/message.js"></script>
+
+
+</body>
+
+</html>

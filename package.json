@@ -1,11 +1,21 @@
 {
+  "name": "3940webrtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "ajax": "^0.0.4",
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
-    "fs": "^0.0.1-security",
-    "http": "^0.0.1-security",
-    "jsdom": "^20.0.3",
-    "mysql2": "^2.3.3",
+    "JSON": "^1.0.0",
+    "mongoose": "^6.7.3",
+    "path": "^0.12.7",
     "socket.io": "^4.5.4"
   }
 }

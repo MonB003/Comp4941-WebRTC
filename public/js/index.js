@@ -1,28 +1,40 @@
-async function loginUser() {
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
+// document.getElementById("loginBtn").addEventListener("click", () => {
+//     let username = document.getElementById("username").value;
+//     if (username == "") {
+//         document.getElementById("errorMessage").innerHTML = "Please fill in the username field.";
 
-    const dataSent = {
-        username, 
-        password
-    };
+//     } else {
+//         localStorage.setItem('USER', username);
+//         window.location.replace("/main.html");
+//     }
 
-    const postDetails = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dataSent)
-    };
+// })
 
-    // Get post owner's ID
-    const postResponse = await fetch('/login', postDetails);
-    const jsonData = await postResponse.json();
-    let responsesStatus = jsonData.status; // Post owner userID
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (responsesStatus == "Success") {
-        window.location.replace("/main");
-    } else {
-        document.getElementById("errorMessage").innerHTML = jsonData.msg;
-    }
-}
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        let username = document.getElementById("username").value;
+        if (username == "") {
+            document.getElementById("errorMessage").innerHTML = "Please fill in the username field.";
+        } else {
+        localStorage.setItem('USER', username);
+        var password = $('#password').val()
+        fetch('/authenticate', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: username,
+                password: password
+            })
+        }).then((res) => {
+            console.log(res)
+            if (res.status == 200) {
+                window.location.href = '/main'
+            } else {
+                window.location.href = '/'
+            }
+        })
+        }
+    })
+        
+})

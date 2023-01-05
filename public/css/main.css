@@ -1,12 +1,3 @@
-#currentCallsDiv {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-
-
 body {
     margin: 0px;
     font-family: fantasy;

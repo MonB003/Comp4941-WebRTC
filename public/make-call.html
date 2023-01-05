@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call</title>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 24px;
+            min-height: 90vh;
+        }
+    </style>
+
+    <script>
+        let myName;
+    </script>
+</head>
+
+<body>
+    <div>
+        <h3>Enter the username of the person you want to call</h3>
+        <input id="otherUsername" type="text" placeholder="Enter the username" required>
+        <br>
+        <button id="startCallBtn">Start Call</button>
+    </div>
+
+    <script src="/js/make-call.js"></script>
+
+</body>
+
+</html>

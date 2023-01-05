@@ -2,39 +2,18 @@
 var socket = io();
 
 // Stores the current user
-var userSending;
-
-async function getCurrentUser() {
-  const postDetails = {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json"
-    }
-  };
-
-  // Get post owner's ID
-  const postResponse = await fetch('/get-current-username', postDetails);
-  const jsonData = await postResponse.json();
-  let responsesStatus = jsonData.status; // Post owner userID
-
-  if (responsesStatus == "Success") {
-    userSending = jsonData.username;
-    console.log(userSending);
-    document.getElementById("thisUsername").innerHTML = userSending + "'s messages";
-
-  }
-}
-getCurrentUser();
+var userSending = localStorage.getItem('USER');
+document.getElementById("thisUsername").innerHTML = userSending + "'s messages";
 
 document.getElementById("backButton").addEventListener("click", () => {
-  window.location.replace("/main");
+    window.location.replace("/main.html")
 })
 
 var form = document.getElementById('messageForm');
 var input = document.getElementById('messageInput');
 var messages = document.getElementById('allMessages');
 
-form.addEventListener('submit', function (e) {
+form.addEventListener('submit', function(e) {
   e.preventDefault();
   if (input.value) {
     let fullMessage = userSending + ": " + input.value
@@ -44,12 +23,12 @@ form.addEventListener('submit', function (e) {
 });
 
 
-socket.on('send message', function (msg) {
-  var newMessage = document.createElement('p');
-  newMessage.textContent = msg;
-  messages.appendChild(newMessage);
-  // window.scrollTo(0, document.body.scrollHeight);
+socket.on('send message', function(msg) {
+    var newMessage = document.createElement('p');
+    newMessage.textContent = msg;
+    messages.appendChild(newMessage);
+    // window.scrollTo(0, document.body.scrollHeight);
 
-  // Automatically scroll down
-  messages.scrollTop = messages.scrollHeight;
-});
+        // Automatically scroll down
+        messages.scrollTop = messages.scrollHeight;
+  });
