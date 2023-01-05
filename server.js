@@ -12,7 +12,7 @@ app.use(express.json())
 
 const path = require('path');
 
-const User = require('./src/models/model')
+const users = require('./src/models/model')
 
 require('./src/db/mongoose')
 app.use(express.static('./public'));
@@ -147,7 +147,7 @@ app.get('/main', (req, res) => {
 
 app.post('/authenticate', (req, res) => {
 
-    User.findOne({email: req.body.email})
+    users.findOne({email: req.body.email})
         .then((data) => {
             if (!data) {
                 console.log('hello')
@@ -178,7 +178,7 @@ app.post('/adduser', (req, res) => {
     console.log(req.body.password);
     bcrypt.hash(req.body.password, 8).then((element) => {
         // User.create({ email: req.body.email, password: element })
-        User.create({ email: req.body.email, password: element })
+        users.create({ email: req.body.email, password: element })
 
     })
     res.status(200).json({
