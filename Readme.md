@@ -22,6 +22,7 @@ In your folder, you will need to install the following node packages:
 npm install express 
 npm install socket.io
 npm install mongoose 
+npm install bcrypt 
 ```
 
 To run the project (in the command line):
@@ -29,13 +30,6 @@ To run the project (in the command line):
 node server.js
 ```
 
-## Credits and References
-
-### Credits:
-- Shey Barpagga
-- Code Workun
-- Monica Bacatan
-
-### References:
+## References
 * Video reference: https://www.youtube.com/watch?v=Uk5DbEnFNP0
 * Code reference: https://github.com/coding-with-chaim/toggle-cam-final
