@@ -223,7 +223,7 @@ io.on('connection', socket => {
             console.log("SERVER SHARE")
             console.log("ALL USERS: " + allSocketUsers)
 
-            console.log("THIS USER: " + thisUserID)
+            console.log("THIS USER SHARING: " + thisUserID)
             io.to(roomId).emit('screen-share', thisUserID);
 
         });

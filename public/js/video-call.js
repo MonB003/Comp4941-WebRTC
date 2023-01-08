@@ -17,6 +17,8 @@ function callOtherUsers(otherUsers, stream) {
         const peer = createPeer(userIdToCall);
         peers[userIdToCall] = peer;
         thisUserID = userIdToCall;
+        console.log("USER ID: " + thisUserID)
+        
         stream.getTracks().forEach(track => {
             peer.addTrack(track, stream);
         });
@@ -98,6 +100,9 @@ async function handleReceiveOffer({ sdp, callerId }, stream) {
         userToAnswerTo: callerId,
         sdp: peer.localDescription,
     };
+
+    peerConnection = peer;
+    console.log("PEER CONN: " + peerConnection)
 
     socket.emit('connection answer', payload);
 }
