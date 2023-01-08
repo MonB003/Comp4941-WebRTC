@@ -35,18 +35,35 @@ function createPeer(userIdToCall) {
     peer.onnegotiationneeded = () => userIdToCall ? handleNegotiationNeededEvent(peer, userIdToCall) : null;
     peer.onicecandidate = handleICECandidateEvent;
     peer.ontrack = (e) => {
-        const container = document.createElement('div');
-        container.classList.add('remote-video-container');
-        const video = document.createElement('video');
-        video.setAttribute("id", "video"+userIdToCall); // Give video element an ID (used later when user leaves call)
-        video.srcObject = e.streams[0];
-        video.autoplay = true;
-        video.playsInline = true;
-        video.classList.add("remote-video");
-        container.appendChild(video);
-        container.id = userIdToCall;
-        remoteVideoContainer.appendChild(container);
-        thisUserID = userIdToCall;
+        // const container = document.createElement('div');
+        // container.classList.add('remote-video-container');
+        // const video = document.createElement('video');
+        // video.setAttribute("id", "video"+userIdToCall); // Give video element an ID (used later when user leaves call)
+        // video.srcObject = e.streams[0];
+        // video.autoplay = true;
+        // video.playsInline = true;
+        // video.classList.add("remote-video");
+        // container.appendChild(video);
+        // container.id = userIdToCall;
+        // remoteVideoContainer.appendChild(container);
+        // thisUserID = userIdToCall;
+        // Check if the user's video element does not exist (hasn't been appended to the page)
+        
+        if (document.getElementById(userIdToCall) == null) {
+            console.log("ON TRACK")
+            const container = document.createElement('div');
+            container.classList.add('remote-video-container');
+            const video = document.createElement('video');
+            video.setAttribute("id", "video" + userIdToCall); // Give video element an ID (used later when user leaves call)
+            video.srcObject = e.streams[0];
+            video.autoplay = true;
+            video.playsInline = true;
+            video.classList.add("remote-video");
+            container.appendChild(video);
+            container.id = userIdToCall;
+            remoteVideoContainer.appendChild(container);
+            thisUserID = userIdToCall;
+        }
     }
     return peer;
 }

@@ -1,7 +1,7 @@
 # Web RTC Video Conferencing
 
 ## Hosted App
-[Hosted App Link](https://webrtc-grp2.herokuapp.com/)
+[Hosted App Link](https://webrtc-mb-4941.herokuapp.com/)
 
 
 ## Configuration instructions
@@ -15,7 +15,7 @@ You will need to install:
 Cloning the repository:
 - Open Command Prompt 
 - `cd` into the folder you want the repository stored in
-- Type:  `git clone https://github.com/SheyBarpagga/3940WebRTC.git`
+- Type:  `git clone https://github.com/MonB003/Comp4941-WebRTC.git`
 
 In your folder, you will need to install the following node packages:
 ```
