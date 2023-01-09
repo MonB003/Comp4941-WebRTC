@@ -140,6 +140,8 @@ app.get('/room/:roomId', (req, res) => {
 var users = [];
 var otherUsers = [];
 var allSocketUsers = [];
+
+var allCallsIDs = [];
 var MAX_USERS = 10;
 io.on('connection', socket => {
     socket.on('user joined room', roomId => {
@@ -147,7 +149,13 @@ io.on('connection', socket => {
         console.log("ROOM: " + JSON.stringify(room))
         console.log("ROOM ID: " + roomId)
 
-        console.log("SOCKET ID 91: " + socket.id)
+        // If the room hasn't already been added to the array
+        if (!allCallsIDs.includes(roomId)) {
+            allCallsIDs.push(roomId);
+        }
+        console.log("ALL CALLS: " + allCallsIDs)
+
+        // console.log("SOCKET ID 91: " + socket.id)
         allSocketUsers.push(socket.id)
 
         // console.log("SOCKET: " + socket)
@@ -170,62 +178,17 @@ io.on('connection', socket => {
             })
         }
 
-        socket.join(roomId);
+        socket.join(roomId);    // Connect user to room
         socket.emit('all other users', otherUsers);
 
-        console.log("SOCKET ID 117: " + socket.id)
+        // console.log("SOCKET ID 117: " + socket.id)
 
 
-        // socket.on('send-message-to-group', (msg) => {
-        socket.on('send-message-to-group', (screenVideo) => {
-            // console.log(room)
-            console.log(roomId)
-            // console.log(msg)
-            // socket.to(room).emit('new-group-message', socket.id);
-            // io.to(roomId).emit('send-message-to-group', msg);
-
-            // Only send to that group call
-            // io.to(roomId).emit('send-message-to-group', msg);
-            // io.to(roomId).emit('send-message-to-group');
-
-            console.log("SERVER SEND")
-            io.to(roomId).emit('send-message-to-group', screenVideo);
-
-
-            // let urlPath = window.location.pathname;
-            // let roomString = "/room/"
-            // console.log(urlPath);
-            // let callID = urlPath.split(roomString).pop();
-            // console.log(callID)
-        });
-
-
-
-        socket.on('after-screen-share', (userSharingID) => {
-            console.log("SERVER AFTER")
-            console.log("USER ID: " + userSharingID)
-            io.to(roomId).emit('after-screen-share', userSharingID);
-        });
-
-
-
-        socket.on('before-screen-share', (screenTrack) => {
-            console.log("SERVER BEFORE")
-            console.log("screenTrack: " + screenTrack)
-            io.to(roomId).emit('before-screen-share', screenTrack);
-
-            console.log("USERS: " + users)
-            console.log("OTHER USERS: " + otherUsers)
-        });
-
-
-        socket.on('screen-share', (thisUserID) => {
-            console.log("SERVER SHARE")
-            console.log("ALL USERS: " + allSocketUsers)
-
-            console.log("THIS USER SHARING: " + thisUserID)
-            io.to(roomId).emit('screen-share', thisUserID);
-
+        socket.on("send-message-to-group", function (data) {
+            console.log("SEND MSG SERVER")
+            console.log("MESSAGE: " + data)
+    
+            io.to(roomId).emit("send-message-to-group", data);
         });
 
 
@@ -271,9 +234,10 @@ io.on('connection', socket => {
 
 
 
-    socket.join(socket.user);
-    console.log("SOCKET USER: " + socket.user)
-    console.log("SOCKET ID 207: " + socket.id)
+    socket.join(socket.user);  // Connect user to socket
+
+    // console.log("SOCKET USER: " + socket.user)
+    // console.log("SOCKET ID 207: " + socket.id)
 
     socket.on('call', (data) => {
         let callee = data.name;
@@ -333,14 +297,48 @@ io.on('connection', socket => {
     });
 
 
+    socket.on("user-connected-sound", (roomId) => {
+        console.log("CONNECTED SOUND SERVER");
+        console.log("ROOM: " + roomId);
+
+        io.to(roomId).emit("user-connected-sound", roomId);
+    });
 
 
-    console.log("ALL SOCKET USERS 269: " + allSocketUsers)
+    // console.log("ALL SOCKET USERS 269: " + allSocketUsers)
 });
 
 
 
 
+
+app.post('/get-call-ids', (req, res) => {
+    // Send to client all currently open calls
+    res.send({
+        callIDs: allCallsIDs
+    });
+
+    // res.send(allCallsIDs);
+})
+
+
+// Gett current session user
+app.post("/get-current-username", function (req, res) {
+    // if (req.session.loggedIn) {
+        // User is logged in
+        res.send({
+            status: "Success",
+            username: req.session.username,
+            userID: req.session.userID
+        });
+    // } else {
+    //     res.send({
+    //         status: "Fail",
+    //         username: "N/A",
+    //         userID: "N/A"
+    //     });
+    // }
+});
 
 
 

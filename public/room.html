@@ -18,6 +18,9 @@
                 
                 <button id="startBtn">Start recording</button>
                 <button id="stopBtn">Stop recording</button>
+
+                <!-- <button id="test" onclick="test()">test</button>
+                <button id="test2" onclick="test2()">test2</button> -->
                 
                 <!-- <button class="button" id="shareScreenBtn4" onclick="shareScreen4()">Share screen</button> -->
                 <!-- <button onclick="captureScreen()">Capture</button> -->
@@ -26,9 +29,29 @@
         </div>
         <div id="right" class="split"></div>
     </div>
+
+
+
+    <div>
+        <div id="allMessagesDiv">
+            <!-- Message list (all current messages) -->
+            <div id="allMessages"></div>
+        </div>
+
+        <div id="messageDiv">
+            <form id="messageForm" action="">
+                <input id="messageInput" placeholder="Type message" maxlength="300" autocomplete="off" />
+                <button id="sendMessageBtn">Send</button>
+            </form>
+        </div>
+    </div>
+   
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js" integrity="sha512-WL6WGKMPBiM9PnHRYIn5YEtq0Z8XP4fkVb4qy7PP4vhmYQErJ/dySyXuFIMDf1eEYCXCrQrMJfkNwKc9gsjTjA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/js/video-call.js"></script>
     <script src="/js/record.js"></script>
-    <script src="/js/screenShare.js"></script>
+    <script src="/js/callMessaging.js"></script>
+    <!-- <script src="/js/screenShare.js"></script> -->
 </body>
 </html>

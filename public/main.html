@@ -9,7 +9,14 @@
     <title>Main</title>
 </head>
 <body>
+    <form action="/logout" method="get" id="logoutForm">
+        <input type="submit" id="logoutBtn" value="Logout" />
+    </form>
+
     <h1 id="thisUsername"></h1>
+
+
+
     <div id="main-container">
         <div id="box">
             <div class="container">
@@ -26,12 +33,20 @@
                 <button id="messagingBtn" onclick="redirectMessaging()">Messaging</button>            
             </div>
             
+            
+            
+            <!-- Other users trying to call, show message here -->
+            <!-- <div id="incomingCallsDiv">
+            </div> -->
 
-            <div id="incomingCallsDiv">
-                <!-- Other users trying to call, show message here -->
+            <div id="currentCallsDiv">
+                <h2>Current Calls</h2>
             </div>
         </div>
     </div>
+
+
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js" integrity="sha512-UNM1njAgOFUa74Z0bADwAq8gbTcqZC8Ej4xPSzpnh0l6KMevwvkBvbldF9uR++qKeJ+MOZHRjV1HZjoRvjDfNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/js/main.js"></script>
 </body>

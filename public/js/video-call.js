@@ -37,20 +37,8 @@ function createPeer(userIdToCall) {
     peer.onnegotiationneeded = () => userIdToCall ? handleNegotiationNeededEvent(peer, userIdToCall) : null;
     peer.onicecandidate = handleICECandidateEvent;
     peer.ontrack = (e) => {
-        // const container = document.createElement('div');
-        // container.classList.add('remote-video-container');
-        // const video = document.createElement('video');
-        // video.setAttribute("id", "video"+userIdToCall); // Give video element an ID (used later when user leaves call)
-        // video.srcObject = e.streams[0];
-        // video.autoplay = true;
-        // video.playsInline = true;
-        // video.classList.add("remote-video");
-        // container.appendChild(video);
-        // container.id = userIdToCall;
-        // remoteVideoContainer.appendChild(container);
-        // thisUserID = userIdToCall;
+
         // Check if the user's video element does not exist (hasn't been appended to the page)
-        
         if (document.getElementById(userIdToCall) == null) {
             console.log("ON TRACK")
             const container = document.createElement('div');
@@ -101,8 +89,8 @@ async function handleReceiveOffer({ sdp, callerId }, stream) {
         sdp: peer.localDescription,
     };
 
-    peerConnection = peer;
-    console.log("PEER CONN: " + peerConnection)
+    // peerConnection = peer;
+    // console.log("PEER CONN: " + peerConnection)
 
     socket.emit('connection answer', payload);
 }
@@ -198,7 +186,10 @@ async function init() {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         userStream = stream;
         userVideo.srcObject = stream;
+
         socket.emit('user joined room', roomId);
+
+        socket.emit('user-connected-sound', roomId);
 
         socket.on('all other users', (otherUsers) => callOtherUsers(otherUsers, stream));
 
@@ -230,3 +221,29 @@ document.getElementById("leaveCallBtn").addEventListener("click", () => {
     //     console.log("NULL")
     // }
 })
+
+
+
+
+// When a user connects to the message page
+socket.on("user-connected-sound", (roomId) => {
+    console.log("CONNECTED SOUND CLIENT");
+
+    // let connectSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");  // WORKS
+    
+    // WORKS
+    // Makes a ping sound whenever a user joins the room
+    let connectSound = new Audio("../sounds/ping.mp3");
+    connectSound.play();
+
+    // connectSound.pause();
+});
+
+// let connectSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
+// let connectSound = new Audio("../sounds/ping.mp3");
+// function test() {
+//     connectSound.play();
+// }
+// function test2() {
+//     connectSound.pause();
+// }

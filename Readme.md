@@ -33,3 +33,4 @@ node server.js
 ## References
 * Video reference: https://www.youtube.com/watch?v=Uk5DbEnFNP0
 * Code reference: https://github.com/coding-with-chaim/toggle-cam-final
+* Sound effect (ping): https://pixabay.com/sound-effects/search/ping/
