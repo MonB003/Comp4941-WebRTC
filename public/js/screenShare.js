@@ -116,3 +116,36 @@ socket.on('before-screen-share', function (screenTrack) {
     createVideoElement();
     console.log("AFTER END")
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async function captureScreen() {
+    let mediaStream = null;
+    try {
+        mediaStream = await navigator.mediaDevices.getDisplayMedia({
+            video: {
+                cursor: "always"
+            },
+            audio: false
+        });
+
+        let newVideo = document.createElement("video");
+        newVideo.setAttribute("id", "screen" + thisUserID);
+        newVideo.srcObject = mediaStream;
+        document.body.appendChild(newVideo);
+    } catch (ex) {
+        console.log("Error occurred", ex);
+    }
+}
