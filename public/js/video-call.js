@@ -211,7 +211,8 @@ init();
 
 
 document.getElementById("leaveCallBtn").addEventListener("click", () => {
-    window.location.replace("/main.html");
+    // window.location.replace("/main.html");
+    window.location.replace("/main");
     
     // console.log("THIS USER: " + thisUserID);
     // if (thisUserID != null) {

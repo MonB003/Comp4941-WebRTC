@@ -25,6 +25,14 @@ h1 {
     align-items: center;
 }
 
+
+#loginDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 #form {
     padding: 2%;
     margin: 5%;
@@ -45,7 +53,7 @@ input {
     outline-width: 3px;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
 }
-button {
+button, #backToLogin {
     cursor: pointer;
     text-align: center;
     display: inline-block;

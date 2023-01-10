@@ -20,6 +20,8 @@ Cloning the repository:
 In your folder, you will need to install the following node packages:
 ```
 npm install express 
+npm install express-session
+npm install jsdom
 npm install socket.io
 npm install mongoose 
 npm install bcrypt 

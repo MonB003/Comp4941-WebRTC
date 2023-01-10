@@ -6,7 +6,8 @@ var userSending = localStorage.getItem('USER');
 document.getElementById("thisUsername").innerHTML = userSending + "'s messages";
 
 document.getElementById("backButton").addEventListener("click", () => {
-    window.location.replace("/main.html")
+    // window.location.replace("/main.html")
+    window.location.replace("/main");
 })
 
 var form = document.getElementById('messageForm');

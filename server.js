@@ -4,11 +4,16 @@
  */
 
 const express = require('express');
+const session = require("express-session");
 const app = express();
 const http = require('http');
 const bcrypt = require('bcryptjs');
+const fs = require("fs");
+const {
+    JSDOM
+} = require('jsdom');
 
-app.use(express.json())
+app.use(express.json());
 
 const path = require('path');
 
@@ -20,7 +25,7 @@ app.use(express.static('./public'));
 const {
     Server
 } = require('socket.io');
-const { json } = require('express');
+
 app.use(express.static('public'));
 
 const server = http.createServer(app);
@@ -28,11 +33,85 @@ const io = new Server(server);
 
 
 
+// Paths
+app.use('/css', express.static('./public/css'));
+app.use('/js', express.static('./public/js'));
+app.use('/html', express.static('./public/html'));
+app.use('/img', express.static('./public/img'));
+
+
+// Session
+app.use(session({
+    secret: "secret",
+    name: "WebRTCSessionID",
+    resave: false,
+    saveUninitialized: true
+}));
+
+
+
+// Go to the landing page
+app.get('/', function (req, res) {
+    // If there is a current session, go directly to the main page
+    if (req.session.loggedIn) {
+        res.redirect("/main");
+
+    } else {
+        // If there's no session, go to the login page
+        let login = fs.readFileSync("./public/html/index.html", "utf8");
+        let loginDOM = new JSDOM(login);
+        res.send(loginDOM.serialize());
+    }
+});
+
+
+
+// Go to the signup page
+app.get('/signup', function (req, res) {
+
+    // If there's no session, go to the login page
+    let signup = fs.readFileSync("./public/html/newUser.html", "utf8");
+    let signupDOM = new JSDOM(signup);
+    res.send(signupDOM.serialize());
+});
+
+
+// When user successfully logs in
+app.get("/main", function (req, res) {
+
+    // Check if user is logged in, if they are then check the user's type
+    if (req.session.loggedIn) {
+        let main = fs.readFileSync("./public/html/main.html", "utf8");
+        let mainDOM = new JSDOM(main);
+        res.send(mainDOM.serialize());
+    } else {
+        // User is not logged in, so direct to login page
+        res.redirect("/");
+    }
+});
+
+
 
 
 app.get('/room/:roomId', (req, res) => {
-    res.sendFile(`${__dirname}/public/room.html`);
+    res.sendFile(`${__dirname}/public/html/room.html`);
 });
+
+
+
+app.get("/message", function (req, res) {
+
+    if (req.session.loggedIn) {
+        let message = fs.readFileSync("./public/html/message.html", "utf8");
+        let messageDOM = new JSDOM(message);
+        res.send(messageDOM.serialize());
+    } else {
+        // User is not logged in, so direct to login page
+        res.redirect("/");
+    }
+});
+
+
 
 // io.on('connection', socket => {
 //     socket.on('user joined room', roomId => {
@@ -346,15 +425,16 @@ app.post("/get-current-username", function (req, res) {
 
 
 
-app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/newUser.html'));
-    // res.send('');
-})
+// app.get('/signup', (req, res) => {
+//     res.sendFile(path.join(__dirname, '/public/newUser.html'));
+//     // res.send('');
+// })
 
-app.get('/main', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/main.html'));
-    // res.send('');
-})
+
+// app.get('/main', (req, res) => {
+//     res.sendFile(path.join(__dirname, '/public/main.html'));
+//     // res.send('');
+// })
 
 app.post('/authenticate', (req, res) => {
 
@@ -372,6 +452,15 @@ app.post('/authenticate', (req, res) => {
                         // req.session.loggedIn = true
                         console.log("hhbiello")
                         // res.redirect('/main')
+
+                        req.session.loggedIn = true;
+                        req.session.username = req.body.username;
+                        req.session.password = req.body.password;
+
+                        req.session.save(function (err) {
+                            // Session saved
+                        });
+
                         res.sendStatus(200)
                     } else {
                         res.sendStatus(201)
@@ -390,6 +479,14 @@ app.post('/adduser', (req, res) => {
     bcrypt.hash(req.body.password, 8).then((element) => {
         // User.create({ email: req.body.email, password: element })
         User.create({ email: req.body.email, password: element })
+
+        req.session.loggedIn = true;
+        req.session.username = req.body.email;
+        req.session.password = req.body.password;
+
+        req.session.save(function (err) {
+            // Session saved
+        });
 
     })
     res.status(200).json({
@@ -411,6 +508,23 @@ app.post('/adduser', (req, res) => {
 //         }
 //     })
 // })
+
+
+
+// Logout of the session
+app.get("/logout", function (req, res) {
+
+    if (req.session) {
+        req.session.destroy(function (error) {
+            if (error) {
+                res.status(400).send("Unable to log out");
+            } else {
+                // Session deleted, redirect to home
+                res.redirect("/");
+            }
+        });
+    }
+});
 
 
 

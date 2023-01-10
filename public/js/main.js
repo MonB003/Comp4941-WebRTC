@@ -17,7 +17,8 @@ displayUsername();
 // })
 
 document.getElementById("messagingBtn").addEventListener("click", () => {
-    window.location.replace("/message.html");
+    // window.location.replace("/message.html");
+    window.location.replace("/message");
 })
 
 
