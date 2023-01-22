@@ -2,13 +2,33 @@
 var socket = io();
 
 // Stores the current user
-var userSending = localStorage.getItem('USER');
-document.getElementById("thisUsername").innerHTML = userSending + "'s messages";
+var userSending = null; 
+
+async function getCurrentUser() {
+  const postDetails = {
+      method: 'POST',
+      headers: {
+          "Content-Type": "application/json"
+      }
+  };
+
+  // Get post owner's ID
+  const postResponse = await fetch('/get-current-username', postDetails);
+  const jsonData = await postResponse.json();
+  let responsesStatus = jsonData.status; // Post owner userID
+
+  if (responsesStatus == "Success") {
+      document.getElementById("thisUsername").innerHTML = jsonData.username + "'s messages";
+      userSending = jsonData.username;
+  } 
+}
+getCurrentUser();
+
 
 document.getElementById("backButton").addEventListener("click", () => {
-    // window.location.replace("/main.html")
     window.location.replace("/main");
 })
+
 
 var form = document.getElementById('messageForm');
 var input = document.getElementById('messageInput');
@@ -28,7 +48,6 @@ socket.on('send message', function(msg) {
     var newMessage = document.createElement('p');
     newMessage.textContent = msg;
     messages.appendChild(newMessage);
-    // window.scrollTo(0, document.body.scrollHeight);
 
         // Automatically scroll down
         messages.scrollTop = messages.scrollHeight;

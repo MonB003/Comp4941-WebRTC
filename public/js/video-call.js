@@ -89,11 +89,39 @@ async function handleReceiveOffer({ sdp, callerId }, stream) {
         sdp: peer.localDescription,
     };
 
-    // peerConnection = peer;
-    // console.log("PEER CONN: " + peerConnection)
+    // await storeUsernameAndID();
 
     socket.emit('connection answer', payload);
 }
+
+
+// async function storeUsernameAndID() {
+//     const postDetails = {
+//         method: 'POST',
+//         headers: {
+//             "Content-Type": "application/json"
+//         }, body: JSON.stringify({
+//             userID: thisUserID
+//         })
+//     };
+
+//     // await fetch('/add-username-id-pair', postDetails);
+//     // await postResponse.json();
+    
+//     const postResponse = await fetch('/add-username-id-pair', postDetails);
+//     const jsonData = await postResponse.json();
+//     let responsesStatus = jsonData.status; // Post owner userID
+
+//     if (responsesStatus == "Success") {
+//         console.log("SUCCESS")
+//         // document.getElementById("thisUsername").innerHTML = "Welcome, " + jsonData.username;
+//         // localStorage.setItem("USER", jsonData.username);
+//     } else {
+//         console.log("FAIL")
+//     }
+// }
+
+
 
 function handleAnswer({ sdp, answererId }) {
     console.log("HANDLE ANSwER")
@@ -209,42 +237,18 @@ init();
 
 
 
-
 document.getElementById("leaveCallBtn").addEventListener("click", () => {
-    // window.location.replace("/main.html");
     window.location.replace("/main");
-    
-    // console.log("THIS USER: " + thisUserID);
-    // if (thisUserID != null) {
-    //     console.log("NOT NULL")
-    //     handleDisconnect(thisUserID);
-    // } else {
-    //     console.log("NULL")
-    // }
 })
-
-
 
 
 // When a user connects to the message page
 socket.on("user-connected-sound", (roomId) => {
     console.log("CONNECTED SOUND CLIENT");
 
-    // let connectSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");  // WORKS
-    
-    // WORKS
     // Makes a ping sound whenever a user joins the room
     let connectSound = new Audio("../sounds/ping.mp3");
     connectSound.play();
 
     // connectSound.pause();
 });
-
-// let connectSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
-// let connectSound = new Audio("../sounds/ping.mp3");
-// function test() {
-//     connectSound.play();
-// }
-// function test2() {
-//     connectSound.pause();
-// }

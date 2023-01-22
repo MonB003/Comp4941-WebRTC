@@ -1,23 +1,28 @@
-// socket.on('send-message-to-group', function(msg) {
-//     var newMessage = document.createElement('p');
-//     newMessage.textContent = msg;
-//     messages.appendChild(newMessage);
-
-//         // Automatically scroll down
-//         messages.scrollTop = messages.scrollHeight;
-//   });
-
-//   socket.emit('send-message-to-group', {
-//     userSending: thisUser,  // variable in main.js
-//     message: messageInput
-//   });
-
-
-var userSending = localStorage.getItem('USER');
+var userSending = null;
 
 var form = document.getElementById('messageForm');
 var input = document.getElementById('messageInput');
 var messages = document.getElementById('allMessages');
+
+async function getCurrentUser() {
+    const postDetails = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+    // Get post owner's ID
+    const postResponse = await fetch('/get-current-username', postDetails);
+    const jsonData = await postResponse.json();
+    let responsesStatus = jsonData.status; // Post owner userID
+
+    if (responsesStatus == "Success") {
+        userSending = jsonData.username;
+    } 
+}
+getCurrentUser();
+
 
 form.addEventListener('submit', function (e) {
     e.preventDefault();

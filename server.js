@@ -32,7 +32,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 
-
 // Paths
 app.use('/css', express.static('./public/css'));
 app.use('/js', express.static('./public/js'));
@@ -65,7 +64,6 @@ app.get('/', function (req, res) {
 });
 
 
-
 // Go to the signup page
 app.get('/signup', function (req, res) {
 
@@ -91,12 +89,16 @@ app.get("/main", function (req, res) {
 });
 
 
-
-
 app.get('/room/:roomId', (req, res) => {
-    res.sendFile(`${__dirname}/public/html/room.html`);
-});
+    // res.sendFile(`${__dirname}/public/html/room.html`);
 
+    if (req.session.loggedIn) {
+        res.sendFile(`${__dirname}/public/html/room.html`);
+    } else {
+        // User is not logged in, so direct to login page
+        res.redirect("/");
+    }
+});
 
 
 app.get("/message", function (req, res) {
@@ -113,115 +115,31 @@ app.get("/message", function (req, res) {
 
 
 
-// io.on('connection', socket => {
-//     socket.on('user joined room', roomId => {
-//         const room = io.sockets.adapter.rooms.get(roomId);
+var usernameIdPairs = new Map();
+app.post('/add-username-id-pair', (req, res) => {
+    let userID = req.body.userID;
+    console.log("USER ID: " + userID)
 
-//         if (room && room.size === 10) {
-//             socket.emit('server is full');
-//             return;
-//         }
-
-//         const otherUsers = [];
-
-//         if (room) {
-//             room.forEach(id => {
-//                 otherUsers.push(id);
-//             })
-//         }
-
-//         socket.join(roomId);
-//         socket.emit('all other users', otherUsers);
-//     });
-
-//     socket.on('peer connection request', ({
-//         userIdToCall,
-//         sdp
-//     }) => {
-//         io.to(userIdToCall).emit("connection offer", {
-//             sdp,
-//             callerId: socket.id
-//         });
-//     });
-
-//     socket.on('connection answer', ({
-//         userToAnswerTo,
-//         sdp
-//     }) => {
-//         io.to(userToAnswerTo).emit('connection answer', {
-//             sdp,
-//             answererId: socket.id
-//         })
-//     });
-
-//     socket.on('ice-candidate', ({
-//         target,
-//         candidate
-//     }) => {
-//         io.to(target).emit('ice-candidate', {
-//             candidate,
-//             from: socket.id
-//         });
-//     });
-
-//     socket.on('disconnecting', () => {
-//         socket.rooms.forEach(room => {
-//             socket.to(room).emit('user disconnected', socket.id);
-//         });
-//     });
+    // Store values in map
+    // usernameIdPairs.set(userID, req.session.username);
+    usernameIdPairs[userID] = req.session.username;
+    
+    console.log("MAP: " + JSON.stringify(usernameIdPairs))
+   
+    res.send({
+        status: "Success"
+    });
+})
 
 
-
-//     socket.join(socket.user);
-//     console.log("SOCKET USER: " + socket.user)
-
-//     socket.on('call', (data) => {
-//         let callee = data.name;
-//         let rtcMessage = data.rtcMessage;
-
-//         socket.to(callee).emit("newCall", {
-//             caller: socket.user,
-//             rtcMessage: rtcMessage
-//         })
-
-//     })
-
-//     socket.on('answerCall', (data) => {
-//         let caller = data.caller;
-//         rtcMessage = data.rtcMessage
-
-//         socket.to(caller).emit("callAnswered", {
-//             callee: socket.user,
-//             rtcMessage: rtcMessage
-//         })
-
-//     })
-
-//     socket.on('ICEcandidate', (data) => {
-//         let otherUser = data.user;
-//         let rtcMessage = data.rtcMessage;
-
-//         socket.to(otherUser).emit("ICEcandidate", {
-//             sender: socket.user,
-//             rtcMessage: rtcMessage
-//         })
-//     })
-
-
-//     socket.on('send message', (msg) => {
-//         console.log('message: ' + msg);
-//         io.emit('send message', msg);
-//     });
-
-// });
-
-
-var users = [];
+// var users = [];
 var otherUsers = [];
 var allSocketUsers = [];
 
 var allCallsIDs = [];
 var MAX_USERS = 10;
+
+/* SOCKET CONNECTION FOR RTC */
 io.on('connection', socket => {
     socket.on('user joined room', roomId => {
         const room = io.sockets.adapter.rooms.get(roomId);
@@ -234,17 +152,15 @@ io.on('connection', socket => {
         }
         console.log("ALL CALLS: " + allCallsIDs)
 
-        // console.log("SOCKET ID 91: " + socket.id)
         allSocketUsers.push(socket.id)
 
+        console.log("SOCKET JOINED: " + socket.id)
         // console.log("SOCKET: " + socket)
 
         if (room && room.size === MAX_USERS) {
             socket.emit('server is full');
             return;
         }
-
-        // const otherUsers = [];
 
         // If the room exists, store the current users 
         if (room) {
@@ -260,8 +176,6 @@ io.on('connection', socket => {
         socket.join(roomId);    // Connect user to room
         socket.emit('all other users', otherUsers);
 
-        // console.log("SOCKET ID 117: " + socket.id)
-
 
         socket.on("send-message-to-group", function (data) {
             console.log("SEND MSG SERVER")
@@ -270,8 +184,6 @@ io.on('connection', socket => {
             io.to(roomId).emit("send-message-to-group", data);
         });
 
-
-        console.log("ALL SOCKET USERS 163: " + allSocketUsers)
     });
 
     socket.on('peer connection request', ({
@@ -315,8 +227,6 @@ io.on('connection', socket => {
 
     socket.join(socket.user);  // Connect user to socket
 
-    // console.log("SOCKET USER: " + socket.user)
-    // console.log("SOCKET ID 207: " + socket.id)
 
     socket.on('call', (data) => {
         let callee = data.name;
@@ -383,8 +293,6 @@ io.on('connection', socket => {
         io.to(roomId).emit("user-connected-sound", roomId);
     });
 
-
-    // console.log("ALL SOCKET USERS 269: " + allSocketUsers)
 });
 
 
@@ -396,52 +304,33 @@ app.post('/get-call-ids', (req, res) => {
     res.send({
         callIDs: allCallsIDs
     });
-
-    // res.send(allCallsIDs);
 })
 
 
 // Gett current session user
 app.post("/get-current-username", function (req, res) {
-    // if (req.session.loggedIn) {
+    if (req.session.loggedIn) {
         // User is logged in
         res.send({
             status: "Success",
-            username: req.session.username,
-            userID: req.session.userID
+            username: req.session.username
         });
-    // } else {
-    //     res.send({
-    //         status: "Fail",
-    //         username: "N/A",
-    //         userID: "N/A"
-    //     });
-    // }
+    } else {
+        res.send({
+            status: "Fail",
+            username: "N/A"
+        });
+    }
 });
 
 
 
-
-
-
-
-// app.get('/signup', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/public/newUser.html'));
-//     // res.send('');
-// })
-
-
-// app.get('/main', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/public/main.html'));
-//     // res.send('');
-// })
-
 app.post('/authenticate', (req, res) => {
 
-    User.findOne({email: req.body.email})
+    User.findOne({username: req.body.username})
         .then((data) => {
             if (!data) {
-                console.log('hello')
+                console.log('INVALID USER')
                 res.redirect('/login')
             } else {
                 hash = data.password
@@ -449,9 +338,7 @@ app.post('/authenticate', (req, res) => {
 
                 bcrypt.compare(myPlainTextPassword, hash).then((result) => {
                     if (result) {
-                        // req.session.loggedIn = true
-                        console.log("hhbiello")
-                        // res.redirect('/main')
+                        console.log("AUTHENTICATED")
 
                         req.session.loggedIn = true;
                         req.session.username = req.body.username;
@@ -474,14 +361,16 @@ app.post('/authenticate', (req, res) => {
 
 })
 
+
 app.post('/adduser', (req, res) => {
+    console.log(req.body.username);
     console.log(req.body.password);
     bcrypt.hash(req.body.password, 8).then((element) => {
-        // User.create({ email: req.body.email, password: element })
-        User.create({ email: req.body.email, password: element })
+        User.create({ username: req.body.username, password: element })
 
+        console.log("SESSION CREATED")
         req.session.loggedIn = true;
-        req.session.username = req.body.email;
+        req.session.username = req.body.username;
         req.session.password = req.body.password;
 
         req.session.save(function (err) {
@@ -496,19 +385,6 @@ app.post('/adduser', (req, res) => {
         }
     })
 })
-// app.post('/adduser', (req, res) => {
-//     console.log(req.body);
-//     bcrypt.hash('test', 8).then((element) => {
-//         User.create({ email: 'webrtc', password: element })
-//     })
-//     res.status(200).json({
-//         success: true,
-//         data: {
-//             msg: 'Created new user!'
-//         }
-//     })
-// })
-
 
 
 // Logout of the session
@@ -519,7 +395,7 @@ app.get("/logout", function (req, res) {
             if (error) {
                 res.status(400).send("Unable to log out");
             } else {
-                // Session deleted, redirect to home
+                // Session deleted, redirect to index page
                 res.redirect("/");
             }
         });
@@ -528,34 +404,8 @@ app.get("/logout", function (req, res) {
 
 
 
-// // Connects to a database and creates a table if needed
-// async function initializeDatabase() {
-//     const mysql = require("mysql2/promise");
-//     let connection;
-//     let createDatabaseTables;
-
-//         connection = await mysql.createConnection({
-//             host: "localhost",
-//             user: "root",
-//             password: "",
-//             multipleStatements: true
-//         });
-//         createDatabaseTables = `CREATE DATABASE IF NOT EXISTS 3940WebRTC;
-//         use 3940WebRTC;
-//         CREATE TABLE IF NOT EXISTS 3940Users(
-//         id int NOT NULL AUTO_INCREMENT, 
-//         username VARCHAR(20),  
-//         password VARCHAR(30), 
-//         PRIMARY KEY (id));`;
-
-//     // Creates a table for users
-//     await connection.query(createDatabaseTables);
-// }
-
-
 // Server runs on the port below
 let port = process.env.PORT || 3000;
 server.listen(port, function () {
     console.log('server is running on port ' + port)
-    // initializeDatabase();
 });
