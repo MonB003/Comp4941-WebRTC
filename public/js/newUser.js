@@ -9,20 +9,6 @@ document.getElementById('signup').addEventListener( "click", async () => {
         document.getElementById("errorMessage").innerHTML = "Please fill in the password field.";
 
     } else {
-        // fetch('/adduser', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({
-        //         username: username,
-        //         password: password
-        //     })
-        // }).then((response) => {
-        //     console.log("RES: " + JSON.stringify(response))
-        //     // window.location.href = '/index.html'
-        //     // window.location.replace("/main");
-        // })
-
-
         const postDetails = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

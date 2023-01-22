@@ -65,26 +65,6 @@ button {
     align-self: center;
 }
 
-/* .lbutton a:link, a:visited {
-    color: white;
-    padding: 20%;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    outline-width: 3px;
-    border-radius: 15px;
-    background-color: rgba(229, 229, 224, 1);
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
-}
-
-a.lbutton a:hover, a:active {
-    background-color: rgba(0, 0, 0, 0.354);
-    outline-width: 3px;
-    border-radius: 15px;
-    background-color: rgba(229, 229, 224, 1);
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.3);
-} */
-
 
 #signupContainer {
     width: 40vw;

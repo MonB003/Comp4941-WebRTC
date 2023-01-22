@@ -368,13 +368,12 @@ app.post('/adduser', (req, res) => {
 
     User.findOne({username: req.body.username})
         .then((data) => {
+            // Check if no user already exists with the username
             if (!data) {
-                console.log("NO DATA")
 
                 bcrypt.hash(req.body.password, 8).then((element) => {
                     User.create({ username: req.body.username, password: element })
             
-                    console.log("SESSION CREATED")
                     req.session.loggedIn = true;
                     req.session.username = req.body.username;
                     req.session.password = req.body.password;
@@ -387,52 +386,17 @@ app.post('/adduser', (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: 'Account created.'
-                    // data: {
-                    //     msg: 'Created new user!'
-                    // }
                 })
-                // res.send({
-                //     success: true,
-                //     message: 'Account created.'
-                // })
 
             } else {
-                console.log("DATA: " + data)
-
+                // A user already exists with the username
                 res.send({
                     success: false,
                     message: 'An account with this username already exists.'
                 })
-
             }
         })
-
 })
-
-
-// app.post('/adduser', (req, res) => {
-//     // console.log(req.body.username);
-//     // console.log(req.body.password);
-//     bcrypt.hash(req.body.password, 8).then((element) => {
-//         User.create({ username: req.body.username, password: element })
-
-//         console.log("SESSION CREATED")
-//         req.session.loggedIn = true;
-//         req.session.username = req.body.username;
-//         req.session.password = req.body.password;
-
-//         req.session.save(function (err) {
-//             // Session saved
-//         });
-
-//     })
-//     res.status(200).json({
-//         success: true,
-//         data: {
-//             msg: 'Created new user!'
-//         }
-//     })
-// })
 
 
 // Logout of the session
