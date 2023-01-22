@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="stylesheet" href="/css/room.css">
     <meta charset="UTF-8">
@@ -7,51 +8,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat room</title>
 </head>
+
 <body>
-    <div id="chat-container" class="chat-container">
-        <div id="left" class="split">
-            <video autoplay id="user-video" class="user-video"></video>
-            <div class="controls">
-                <button class="button" id="toggle-cam">Hide cam</button>
-                <button class="button" id="toggle-microphone">Turn off mic</button>
-                <button class="button" id="leaveCallBtn">Leave Call</button>
-                
-                <button id="startBtn">Start recording</button>
-                <button id="stopBtn">Stop recording</button>
 
-                <!-- <button id="test" onclick="test()">test</button>
-                <button id="test2" onclick="test2()">test2</button> -->
-                
-                <!-- <button class="button" id="shareScreenBtn4" onclick="shareScreen4()">Share screen</button> -->
-                <!-- <button onclick="captureScreen()">Capture</button> -->
+    <div id="page">
 
+        <div id="chat-container" class="chat-container">
+            <div id="left" class="split">
+                <video autoplay id="user-video" class="user-video"></video>
+                <!-- <div class="controls">
+                    <button class="button" id="toggle-cam">Hide cam</button>
+                    <button class="button" id="toggle-microphone">Turn off mic</button>
+                    <button class="button" id="leaveCallBtn">Leave Call</button>
+                    
+                    <button id="startBtn">Start recording</button>
+                    <button id="stopBtn">Stop recording</button>
+    
+                </div> -->
             </div>
+            <div id="right" class="split"></div>
         </div>
-        <div id="right" class="split"></div>
-    </div>
 
 
 
-    <div>
-        <div id="allMessagesDiv">
+        <div id="messageContainer">
+            <h2>Messages</h2>
+
             <!-- Message list (all current messages) -->
             <div id="allMessages"></div>
+
+            <div id="messageDiv">
+                <form id="messageForm" action="">
+                    <input id="messageInput" placeholder="Type message" maxlength="300" autocomplete="off" />
+                    <button id="sendMessageBtn">Send</button>
+                </form>
+            </div>
         </div>
 
-        <div id="messageDiv">
-            <form id="messageForm" action="">
-                <input id="messageInput" placeholder="Type message" maxlength="300" autocomplete="off" />
-                <button id="sendMessageBtn">Send</button>
-            </form>
-        </div>
     </div>
-   
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js" integrity="sha512-WL6WGKMPBiM9PnHRYIn5YEtq0Z8XP4fkVb4qy7PP4vhmYQErJ/dySyXuFIMDf1eEYCXCrQrMJfkNwKc9gsjTjA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <div id="controlsDiv" class="controls">
+
+        <button class="button" id="toggle-cam">Hide cam</button>
+        <button class="button" id="toggle-microphone">Turn off mic</button>
+        <button class="button" id="leaveCallBtn">Leave Call</button>
+
+        <button id="startBtn">Start recording</button>
+        <button id="stopBtn">Stop recording</button>
+
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"
+        integrity="sha512-WL6WGKMPBiM9PnHRYIn5YEtq0Z8XP4fkVb4qy7PP4vhmYQErJ/dySyXuFIMDf1eEYCXCrQrMJfkNwKc9gsjTjA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/js/video-call.js"></script>
     <script src="/js/record.js"></script>
     <script src="/js/callMessaging.js"></script>
-    <!-- <script src="/js/screenShare.js"></script> -->
+
 </body>
+
 </html>

@@ -1,11 +1,17 @@
 window.onload = function() {
     const parts = []; //keep track of data
-    let mediaRecorder;
+    // let mediaRecorder;
+
+    disableStopRecordBtn();
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: true}).then(stream => {
+        let mediaRecorder;
+
         document.getElementById("user-video").srcObject = stream;
 
         document.getElementById("startBtn").onclick = function() {
+            enableStopRecordBtn();
+
             mediaRecorder = new MediaRecorder(stream);
 
             mediaRecorder.start(1000);
@@ -34,6 +40,21 @@ window.onload = function() {
             anchor.href = url;
             anchor.download = "test.webm";
             anchor.click(); // Will start download process
+
+            disableStopRecordBtn();
         }
     });
+}
+
+function disableStopRecordBtn() {
+    let stopBtn = document.getElementById("stopBtn");
+    // stopBtn.setAttribute("disabled", true);
+    stopBtn.disabled = true;
+    stopBtn.style.cursor = "not-allowed";
+}
+
+function enableStopRecordBtn() {
+    let stopBtn = document.getElementById("stopBtn");
+    stopBtn.disabled = false;
+    stopBtn.style.cursor = "pointer";
 }
