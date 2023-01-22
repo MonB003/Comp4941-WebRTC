@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
+
 body {
+    font-family: 'Manrope', sans-serif;
     overflow-y: hidden;
+}
+
+p, a, input, button {
+    font-family: 'Manrope', sans-serif;
 }
 
 #page {
@@ -59,6 +66,15 @@ h2 {
     overflow-y: scroll;
     scroll-behavior: smooth;
     background-color: rgb(228, 228, 228);
+}
+
+input {
+    /* width: 70%; */
+    padding: 12px 20px;
+    margin: 5%;
+    /* box-sizing: border-box; */
+    /* outline-width: 3px; */
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
 }
 
 

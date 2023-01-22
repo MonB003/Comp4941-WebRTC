@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('signup').addEventListener( "click",() => {
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;
@@ -17,5 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     })
 
-})
+
+    document.getElementById("backToLogin").addEventListener("click", () => {
+        window.location.replace("/");
+    });
+
+// })
 

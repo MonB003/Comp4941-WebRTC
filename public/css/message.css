@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
+
 body {
     margin: 0px;
-    font-family: fantasy;
-    font-weight: lighter;
+    font-family: 'Manrope', sans-serif;
     background-image: url("/img/background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -9,6 +10,10 @@ body {
     min-height: 100vh;
     justify-content: center;
     align-items: center;
+}
+
+p, a, input, button {
+    font-family: 'Manrope', sans-serif;
 }
 
 h1 {

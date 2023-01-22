@@ -350,8 +350,9 @@ app.post('/authenticate', (req, res) => {
 
                         res.sendStatus(200)
                     } else {
+                        console.log("NOT AUTHENTICATED")
                         res.sendStatus(201)
-                        res.redirect('/')
+                        // res.redirect('/')
                     }
 
                 })
@@ -363,8 +364,8 @@ app.post('/authenticate', (req, res) => {
 
 
 app.post('/adduser', (req, res) => {
-    console.log(req.body.username);
-    console.log(req.body.password);
+    // console.log(req.body.username);
+    // console.log(req.body.password);
     bcrypt.hash(req.body.password, 8).then((element) => {
         User.create({ username: req.body.username, password: element })
 
