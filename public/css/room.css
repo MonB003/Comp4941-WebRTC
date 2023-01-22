@@ -15,9 +15,21 @@ body {
     width: 50%;
 }
 
-#user-video, .remote-video-container {
+#user-video {
     width: 100%;
 }
+
+#right {
+    width: 100%;
+}
+
+/* Other users videos */
+.remote-video {
+    width: 100%;
+    /* width: 90%; */
+    /* margin: 0 auto; */
+}
+
 
 
 #messageContainer {
