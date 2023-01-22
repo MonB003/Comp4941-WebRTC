@@ -327,6 +327,7 @@ app.post("/get-current-username", function (req, res) {
 
 app.post('/authenticate', (req, res) => {
 
+    // User.findOne({username: req.body.username, password: req.body.password})
     User.findOne({username: req.body.username})
         .then((data) => {
             if (!data) {
@@ -364,28 +365,74 @@ app.post('/authenticate', (req, res) => {
 
 
 app.post('/adduser', (req, res) => {
-    // console.log(req.body.username);
-    // console.log(req.body.password);
-    bcrypt.hash(req.body.password, 8).then((element) => {
-        User.create({ username: req.body.username, password: element })
 
-        console.log("SESSION CREATED")
-        req.session.loggedIn = true;
-        req.session.username = req.body.username;
-        req.session.password = req.body.password;
+    User.findOne({username: req.body.username})
+        .then((data) => {
+            if (!data) {
+                console.log("NO DATA")
 
-        req.session.save(function (err) {
-            // Session saved
-        });
+                bcrypt.hash(req.body.password, 8).then((element) => {
+                    User.create({ username: req.body.username, password: element })
+            
+                    console.log("SESSION CREATED")
+                    req.session.loggedIn = true;
+                    req.session.username = req.body.username;
+                    req.session.password = req.body.password;
+            
+                    req.session.save(function (err) {
+                        // Session saved
+                    });
+            
+                })
+                res.status(200).json({
+                    success: true,
+                    message: 'Account created.'
+                    // data: {
+                    //     msg: 'Created new user!'
+                    // }
+                })
+                // res.send({
+                //     success: true,
+                //     message: 'Account created.'
+                // })
 
-    })
-    res.status(200).json({
-        success: true,
-        data: {
-            msg: 'Created new user!'
-        }
-    })
+            } else {
+                console.log("DATA: " + data)
+
+                res.send({
+                    success: false,
+                    message: 'An account with this username already exists.'
+                })
+
+            }
+        })
+
 })
+
+
+// app.post('/adduser', (req, res) => {
+//     // console.log(req.body.username);
+//     // console.log(req.body.password);
+//     bcrypt.hash(req.body.password, 8).then((element) => {
+//         User.create({ username: req.body.username, password: element })
+
+//         console.log("SESSION CREATED")
+//         req.session.loggedIn = true;
+//         req.session.username = req.body.username;
+//         req.session.password = req.body.password;
+
+//         req.session.save(function (err) {
+//             // Session saved
+//         });
+
+//     })
+//     res.status(200).json({
+//         success: true,
+//         data: {
+//             msg: 'Created new user!'
+//         }
+//     })
+// })
 
 
 // Logout of the session

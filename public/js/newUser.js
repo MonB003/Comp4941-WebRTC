@@ -1,26 +1,50 @@
-// document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('signup').addEventListener( "click",() => {
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        console.log(username)
-        console.log(password);
-        fetch('/adduser', {
+document.getElementById('signup').addEventListener( "click", async () => {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+    if (username == "") {
+        document.getElementById("errorMessage").innerHTML = "Please fill in the username field.";
+
+    } else if (password == "") {
+        document.getElementById("errorMessage").innerHTML = "Please fill in the password field.";
+
+    } else {
+        // fetch('/adduser', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({
+        //         username: username,
+        //         password: password
+        //     })
+        // }).then((response) => {
+        //     console.log("RES: " + JSON.stringify(response))
+        //     // window.location.href = '/index.html'
+        //     // window.location.replace("/main");
+        // })
+
+
+        const postDetails = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 username: username,
                 password: password
             })
-        }).then(() => {
-            // window.location.href = '/index.html'
+        };
+
+        const postResponse = await fetch('/adduser', postDetails);
+        const jsonData = await postResponse.json();
+        let resSuccess = jsonData.success; 
+
+        if (resSuccess == false) {
+            document.getElementById("errorMessage").innerHTML = jsonData.message;
+        } else {
             window.location.replace("/main");
-        })
-    })
+        }
+    }
+})
 
 
-    document.getElementById("backToLogin").addEventListener("click", () => {
-        window.location.replace("/");
-    });
-
-// })
-
+document.getElementById("backToLogin").addEventListener("click", () => {
+    window.location.replace("/");
+});
