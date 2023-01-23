@@ -48,13 +48,20 @@ window.onload = function() {
 
 function disableStopRecordBtn() {
     let stopBtn = document.getElementById("stopBtn");
-    // stopBtn.setAttribute("disabled", true);
     stopBtn.disabled = true;
     stopBtn.style.cursor = "not-allowed";
+
+    let startBtn = document.getElementById("startBtn");
+    startBtn.disabled = false;
+    startBtn.style.cursor = "pointer";
 }
 
 function enableStopRecordBtn() {
     let stopBtn = document.getElementById("stopBtn");
     stopBtn.disabled = false;
     stopBtn.style.cursor = "pointer";
+
+    let startBtn = document.getElementById("startBtn");
+    startBtn.disabled = true;
+    startBtn.style.cursor = "not-allowed";
 }

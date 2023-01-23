@@ -17,7 +17,6 @@ function callOtherUsers(otherUsers, stream) {
         const peer = createPeer(userIdToCall);
         peers[userIdToCall] = peer;
         thisUserID = userIdToCall;
-        console.log("USER ID: " + thisUserID)
         
         stream.getTracks().forEach(track => {
             peer.addTrack(track, stream);
@@ -52,6 +51,13 @@ function createPeer(userIdToCall) {
             container.appendChild(video);
             container.id = userIdToCall;
             remoteVideoContainer.appendChild(container);
+
+            const pUsername = document.createElement("p");
+            pUsername.textContent = thisUsername;
+            pUsername.setAttribute("id", "username" + userIdToCall);
+            pUsername.setAttribute("class", "remote-username");
+            container.appendChild(pUsername);
+
             thisUserID = userIdToCall;
         }
     }
@@ -219,6 +225,10 @@ async function init() {
 
         socket.emit('user-connected-sound', roomId);
 
+        socket.emit('username-connected', thisUsername, roomId);
+
+        socket.emit('store-username-id', thisUsername);
+
         socket.on('all other users', (otherUsers) => callOtherUsers(otherUsers, stream));
 
         socket.on("connection offer", (payload) => handleReceiveOffer(payload, stream));
@@ -232,7 +242,7 @@ async function init() {
         socket.on('server is full', () => alert("chat is full"));
     });
 }
-
+getCurrentUser();
 init();
 
 
@@ -251,4 +261,48 @@ socket.on("user-connected-sound", (roomId) => {
     connectSound.play();
 
     // connectSound.pause();
+});
+
+
+
+var thisUsername;
+async function getCurrentUser() {
+    console.log("GET CURRENT USER")
+
+    const postDetails = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+    // Get session user
+    const postResponse = await fetch('/get-current-username', postDetails);
+    const jsonData = await postResponse.json();
+    let responsesStatus = jsonData.status; 
+
+    console.log(JSON.stringify(jsonData))
+
+    if (responsesStatus == "Success") {
+        // document.getElementById("thisUsername").innerHTML = jsonData.username;
+        thisUsername = jsonData.username;
+        // socket.emit('username-connected', thisUsername, roomId);
+    } 
+}
+// getCurrentUser();
+
+socket.on("username-connected", (username) => {
+    console.log("CONNECTED USERNAME CLIENT");
+    console.log(username)
+
+    let pName = document.createElement("p");
+    pName.textContent = username + " has joined the call.";
+    document.getElementById("allMessages").appendChild(pName);
+});
+
+
+socket.on("store-username-id", (username, id) => {
+    console.log("STORE USERNAME ID");
+    console.log(username)
+    console.log(id)
 });

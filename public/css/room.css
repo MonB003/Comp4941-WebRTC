@@ -71,6 +71,7 @@ h2 {
     background-color: white;
     width: 80%;
     height: 300px;
+    padding: 7px;
     align-self: center;
     overflow-y: scroll;
     scroll-behavior: smooth;
@@ -115,4 +116,11 @@ button {
     position: fixed;
     float: left;
     /* background-color: rgb(223, 223, 255); */
+}
+
+
+.remote-username {
+    background-color: black;
+    color: white;
+    float: left;
 }

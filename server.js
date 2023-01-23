@@ -133,6 +133,7 @@ app.post('/add-username-id-pair', (req, res) => {
 
 
 // var users = [];
+var usernameAndIds = [];
 var otherUsers = [];
 var allSocketUsers = [];
 
@@ -171,6 +172,7 @@ io.on('connection', socket => {
 
                 // allSocketUsers.push(id)
             })
+            console.log("OTHER USERS: " + otherUsers)
         }
 
         socket.join(roomId);    // Connect user to room
@@ -182,6 +184,25 @@ io.on('connection', socket => {
             console.log("MESSAGE: " + data)
     
             io.to(roomId).emit("send-message-to-group", data);
+        });
+
+
+
+        socket.on("store-username-id", (username) => {
+            console.log("STORE USERNAME ID");
+            console.log(username);
+            console.log(socket.id);
+    
+            let userInfo = {
+                username: username,
+                ID: socket.id
+            }
+    
+            usernameAndIds.push(userInfo);
+            console.log("LIST: " + JSON.stringify(usernameAndIds))
+    
+    
+            io.to(roomId).emit("store-username-id", username, socket.id);
         });
 
     });
@@ -291,6 +312,15 @@ io.on('connection', socket => {
         console.log("ROOM: " + roomId);
 
         io.to(roomId).emit("user-connected-sound", roomId);
+    });
+
+
+    socket.on("username-connected", (username, roomId) => {
+        console.log("CONNECTED USERNAME");
+        console.log(username);
+        console.log(roomId);
+
+        io.to(roomId).emit("username-connected", username);
     });
 
 });
