@@ -54,8 +54,10 @@ async function showAllOpenCalls() {
         let newAnchor = document.createElement("a");
         newAnchor.href = `/room/${currCall}`
         newAnchor.innerHTML = currCall;
+        let brTag = document.createElement("br");
 
         currentCallsDiv.appendChild(newAnchor);
+        currentCallsDiv.appendChild(brTag);
     }
 }
 showAllOpenCalls();
