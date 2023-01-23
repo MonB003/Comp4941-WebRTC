@@ -205,6 +205,15 @@ io.on('connection', socket => {
             io.to(roomId).emit("store-username-id", username, socket.id);
         });
 
+
+        socket.on("get-other-users", () => {
+            console.log("GET OTHERS");
+    
+            console.log("LIST: " + JSON.stringify(usernameAndIds))
+    
+            io.to(roomId).emit("get-other-users", usernameAndIds);
+        });
+
     });
 
     socket.on('peer connection request', ({

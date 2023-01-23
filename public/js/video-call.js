@@ -11,6 +11,8 @@ const socket = io('/');
 
 let thisUserID = null;
 
+// var otherUsersArray = []
+
 function callOtherUsers(otherUsers, stream) {
     console.log("CALL OTHER USERS")
     otherUsers.forEach(userIdToCall => {
@@ -53,7 +55,7 @@ function createPeer(userIdToCall) {
             remoteVideoContainer.appendChild(container);
 
             const pUsername = document.createElement("p");
-            pUsername.textContent = thisUsername;
+            pUsername.textContent = thisUsername;  // PROBLEM ***************
             pUsername.setAttribute("id", "username" + userIdToCall);
             pUsername.setAttribute("class", "remote-username");
             container.appendChild(pUsername);
@@ -229,6 +231,8 @@ async function init() {
 
         socket.emit('store-username-id', thisUsername);
 
+        socket.emit('get-other-users');
+
         socket.on('all other users', (otherUsers) => callOtherUsers(otherUsers, stream));
 
         socket.on("connection offer", (payload) => handleReceiveOffer(payload, stream));
@@ -305,4 +309,27 @@ socket.on("store-username-id", (username, id) => {
     console.log("STORE USERNAME ID");
     console.log(username)
     console.log(id)
+});
+
+socket.on("get-other-users", (usernameAndIds) => {
+    console.log("GET OTHERS CLIENT");
+    console.log(usernameAndIds)
+
+    usernameAndIds.forEach(user => {
+        console.log("ELEMENT: " + user)
+        // console.log("ELEMENT2: " + user.username)
+        // console.log("ELEMENT3: " + user.ID)
+
+        let currUserID = user.ID;
+        let currPar = document.getElementById("username" + currUserID);
+
+        // Get element with this ID and change text content
+        if (currPar != null) {
+            document.getElementById("username" + currUserID).textContent = user.username;
+            console.log("NOT NULL: " + user.username);
+        } else {
+            console.log("NULL");
+            document.getElementById("hostUsername").textContent = user.username;
+        }
+    })
 });
