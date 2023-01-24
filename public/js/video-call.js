@@ -55,9 +55,28 @@ function createPeer(userIdToCall) {
             remoteVideoContainer.appendChild(container);
 
             const pUsername = document.createElement("p");
-            pUsername.textContent = thisUsername;  // PROBLEM ***************
+            // pUsername.textContent = thisUsername;  // PROBLEM ***************
             pUsername.setAttribute("id", "username" + userIdToCall);
             pUsername.setAttribute("class", "remote-username");
+            // container.appendChild(pUsername);
+
+
+            // console.log("ON TRACK USER/ID ARRAY: " + JSON.stringify(usernameAndIdsArray))
+            // let foundID = false;
+            // usernameAndIdsArray.forEach(user => {
+            //     console.log("CURR USER: " + JSON.stringify(user))
+            //     if (user.ID == userIdToCall) {
+            //         console.log("ID FOUND");
+            //         pUsername.textContent = user.name;
+            //         foundID = true;
+            //     }
+            // })
+
+            // if (!foundID) {
+            //     pUsername.textContent = thisUsername;
+            // }
+
+            // pUsername.textContent = thisUsername; 
             container.appendChild(pUsername);
 
             thisUserID = userIdToCall;
@@ -231,7 +250,7 @@ async function init() {
 
         socket.emit('store-username-id', thisUsername);
 
-        socket.emit('get-other-users');
+        // socket.emit('get-other-users');
 
         socket.on('all other users', (otherUsers) => callOtherUsers(otherUsers, stream));
 
@@ -244,12 +263,63 @@ async function init() {
         socket.on('user disconnected', (userId) => handleDisconnect(userId));
 
         socket.on('server is full', () => alert("chat is full"));
+
+        socket.emit('get-other-users');
+
+        socket.emit('get-all-users');
     });
 }
 getCurrentUser();
 init();
 
 
+// async function setupFunctions() {
+//     await init();
+//     myFunc();
+// }
+// setupFunctions();
+
+// window.addEventListener("load", (event) => {
+//     console.log("page is fully loaded");
+// });
+
+// document.addEventListener("DOMContentLoaded", (event) => {
+//     console.log("page is fully loaded");
+//     console.log("TEST: " + test)
+//   });
+
+// function setupUsernames() {
+//     socket.emit('get-other-users');
+// }
+// setupUsernames();
+
+
+// window.addEventListener("DOMContentLoaded", (event) => {
+//     console.log("page is fully loaded");
+//     socket.emit('get-other-users');
+// });
+
+
+function myFunc() {
+    socket.emit('get-other-users');
+    console.log("***END TEST")
+}
+
+
+function getAllUsers() {
+    socket.emit('get-all-users');
+}
+
+var usernameAndIdsArray;
+socket.on("get-all-users", (usernameAndIds) => {
+    console.log("GET ALL CLIENT");
+    console.log(usernameAndIds)
+
+    usernameAndIdsArray = usernameAndIds;
+
+    console.log("USER/ID ARRAY: " + JSON.stringify(usernameAndIdsArray))
+});
+// getAllUsers();
 
 document.getElementById("leaveCallBtn").addEventListener("click", () => {
     window.location.replace("/main");
@@ -311,17 +381,32 @@ socket.on("store-username-id", (username, id) => {
     console.log(id)
 });
 
+var test;
 socket.on("get-other-users", (usernameAndIds) => {
     console.log("GET OTHERS CLIENT");
     console.log(usernameAndIds)
 
+    console.log("THIS USER ID: " + thisUserID)
+    console.log("THIS USER NAME: " + thisUsername)
+
     usernameAndIds.forEach(user => {
-        console.log("ELEMENT: " + user)
+        console.log("ELEMENT: " + JSON.stringify(user))
         // console.log("ELEMENT2: " + user.username)
         // console.log("ELEMENT3: " + user.ID)
 
         let currUserID = user.ID;
-        let currPar = document.getElementById("username" + currUserID);
+
+        let parID = String("username" + currUserID);
+        console.log("ID: " + parID)
+
+        // let currPar = document.getElementById("username" + currUserID);
+        let currPar = document.getElementById(parID);
+
+        // console.log("ELEM: " + JSON.stringify(document.getElementById(parID)));
+        // console.log("ELEM2: " + JSON.stringify(document.getElementById(currUserID)));
+        console.log("ELEM: " + document.getElementById(parID));
+        console.log("ELEM2: " + document.getElementById(currUserID));
+        console.log("ELEM3: " + document.getElementById("toggle-cam"));
 
         // Get element with this ID and change text content
         if (currPar != null) {
@@ -331,5 +416,21 @@ socket.on("get-other-users", (usernameAndIds) => {
             console.log("NULL");
             document.getElementById("hostUsername").textContent = user.username;
         }
+
+        test = JSON.stringify(document.getElementById(currUserID))
+
+
+
+        // Button (doesn't click)
+        // let userBtn = document.createElement("button");
+        // userBtn.textContent = user.username;
+        // userBtn.id = "button" + user.ID;
+        // userBtn.setAttribute("onclick", "messageThisUser(" + user.ID + ")");
+        // document.body.appendChild(userBtn);
     })
 });
+
+
+function messageThisUser(userID) {
+    console.log("ID: " + userID);
+}

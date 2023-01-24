@@ -214,6 +214,15 @@ io.on('connection', socket => {
             io.to(roomId).emit("get-other-users", usernameAndIds);
         });
 
+
+        socket.on("get-all-users", () => {
+            console.log("GET ALL OTHERS");
+    
+            console.log("LIST: " + JSON.stringify(usernameAndIds))
+    
+            io.to(roomId).emit("get-all-users", usernameAndIds);
+        });
+
     });
 
     socket.on('peer connection request', ({
