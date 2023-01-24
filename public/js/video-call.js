@@ -19,7 +19,7 @@ function callOtherUsers(otherUsers, stream) {
         const peer = createPeer(userIdToCall);
         peers[userIdToCall] = peer;
         thisUserID = userIdToCall;
-        
+
         stream.getTracks().forEach(track => {
             peer.addTrack(track, stream);
         });
@@ -29,11 +29,9 @@ function callOtherUsers(otherUsers, stream) {
 function createPeer(userIdToCall) {
     console.log("CREATE PEER")
     const peer = new RTCPeerConnection({
-        iceServers: [
-            {
-                urls: "stun:stun.stunprotocol.org"
-            }
-        ]
+        iceServers: [{
+            urls: "stun:stun.stunprotocol.org"
+        }]
     });
     peer.onnegotiationneeded = () => userIdToCall ? handleNegotiationNeededEvent(peer, userIdToCall) : null;
     peer.onicecandidate = handleICECandidateEvent;
@@ -97,7 +95,10 @@ async function handleNegotiationNeededEvent(peer, userIdToCall) {
     socket.emit('peer connection request', payload);
 }
 
-async function handleReceiveOffer({ sdp, callerId }, stream) {
+async function handleReceiveOffer({
+    sdp,
+    callerId
+}, stream) {
     console.log("HANDLE RECEIVE OFFER")
     const peer = createPeer(callerId);
     peers[callerId] = peer;
@@ -134,7 +135,7 @@ async function handleReceiveOffer({ sdp, callerId }, stream) {
 
 //     // await fetch('/add-username-id-pair', postDetails);
 //     // await postResponse.json();
-    
+
 //     const postResponse = await fetch('/add-username-id-pair', postDetails);
 //     const jsonData = await postResponse.json();
 //     let responsesStatus = jsonData.status; // Post owner userID
@@ -150,7 +151,10 @@ async function handleReceiveOffer({ sdp, callerId }, stream) {
 
 
 
-function handleAnswer({ sdp, answererId }) {
+function handleAnswer({
+    sdp,
+    answererId
+}) {
     console.log("HANDLE ANSwER")
     const desc = new RTCSessionDescription(sdp);
     peers[answererId].setRemoteDescription(desc).catch(e => console.log(e));
@@ -169,7 +173,10 @@ function handleICECandidateEvent(e) {
     }
 }
 
-function handleReceiveIce({ candidate, from }) {
+function handleReceiveIce({
+    candidate,
+    from
+}) {
     console.log("HANDLE RECEIVE ICE")
     const inComingCandidate = new RTCIceCandidate(candidate);
     peers[from].addIceCandidate(inComingCandidate);
@@ -184,7 +191,7 @@ function handleDisconnect(userId) {
     document.getElementById(userId).remove();
 
     // Remove video element
-    document.getElementById("video"+userId).remove();
+    document.getElementById("video" + userId).remove();
 };
 
 
@@ -238,7 +245,10 @@ async function init() {
     console.log("START INIT")
     socket.on('connect', async () => {
         console.log("CONNECT INIT")
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        });
         userStream = stream;
         userVideo.srcObject = stream;
 
@@ -264,9 +274,9 @@ async function init() {
 
         socket.on('server is full', () => alert("chat is full"));
 
-        socket.emit('get-other-users');
+        // socket.emit('get-other-users');
 
-        socket.emit('get-all-users');
+        // socket.emit('get-all-users');
     });
 }
 getCurrentUser();
@@ -275,7 +285,7 @@ init();
 
 // async function setupFunctions() {
 //     await init();
-//     myFunc();
+//     showUsernames();
 // }
 // setupFunctions();
 
@@ -300,11 +310,25 @@ init();
 // });
 
 
-function myFunc() {
+// window.addEventListener("DOMContentLoaded", (event) => {
+//     console.log("page is fully loaded");
+
+//     socket.emit('get-all-users');
+// });
+
+
+function showUsernames() {
     socket.emit('get-other-users');
     console.log("***END TEST")
 }
 
+// document.querySelector(".remote-video").onload = function() {
+//     console.log("VIDEOS LOADED")
+// }
+
+// document.querySelector(".remote-video").ready(function(){
+//     console.log("VIDEOS LOADED")
+//   })
 
 function getAllUsers() {
     socket.emit('get-all-users');
@@ -353,7 +377,7 @@ async function getCurrentUser() {
     // Get session user
     const postResponse = await fetch('/get-current-username', postDetails);
     const jsonData = await postResponse.json();
-    let responsesStatus = jsonData.status; 
+    let responsesStatus = jsonData.status;
 
     console.log(JSON.stringify(jsonData))
 
@@ -361,7 +385,7 @@ async function getCurrentUser() {
         // document.getElementById("thisUsername").innerHTML = jsonData.username;
         thisUsername = jsonData.username;
         // socket.emit('username-connected', thisUsername, roomId);
-    } 
+    }
 }
 // getCurrentUser();
 
@@ -434,3 +458,26 @@ socket.on("get-other-users", (usernameAndIds) => {
 function messageThisUser(userID) {
     console.log("ID: " + userID);
 }
+
+
+
+
+
+
+
+// Wait 1 second before showing usernames to make sure the elements have loaded onto the page firsst
+window.onload = setTimeout(waitLoad, 1000)
+
+function waitLoad() {
+    console.log("LOADED")
+    // alert("Loaded!")
+    showUsernames();
+
+    // document.write("This page is loaded now!")
+};
+
+
+//    window.onload = setInterval(function(){
+//     alert("Loaded!")
+//     document.write("This page is loaded now!")
+//    }, 3000);
