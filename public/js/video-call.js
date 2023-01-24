@@ -11,7 +11,6 @@ const socket = io('/');
 
 let thisUserID = null;
 
-// var otherUsersArray = []
 
 function callOtherUsers(otherUsers, stream) {
     console.log("CALL OTHER USERS")
@@ -42,6 +41,7 @@ function createPeer(userIdToCall) {
             console.log("ON TRACK")
             const container = document.createElement('div');
             container.classList.add('remote-video-container');
+            
             const video = document.createElement('video');
             video.setAttribute("id", "video" + userIdToCall); // Give video element an ID (used later when user leaves call)
             video.srcObject = e.streams[0];
@@ -53,30 +53,10 @@ function createPeer(userIdToCall) {
             remoteVideoContainer.appendChild(container);
 
             const pUsername = document.createElement("p");
-            // pUsername.textContent = thisUsername;  // PROBLEM ***************
             pUsername.setAttribute("id", "username" + userIdToCall);
             pUsername.setAttribute("class", "remote-username");
-            // container.appendChild(pUsername);
-
-
-            // console.log("ON TRACK USER/ID ARRAY: " + JSON.stringify(usernameAndIdsArray))
-            // let foundID = false;
-            // usernameAndIdsArray.forEach(user => {
-            //     console.log("CURR USER: " + JSON.stringify(user))
-            //     if (user.ID == userIdToCall) {
-            //         console.log("ID FOUND");
-            //         pUsername.textContent = user.name;
-            //         foundID = true;
-            //     }
-            // })
-
-            // if (!foundID) {
-            //     pUsername.textContent = thisUsername;
-            // }
-
-            // pUsername.textContent = thisUsername; 
             container.appendChild(pUsername);
-
+           
             thisUserID = userIdToCall;
         }
     }
@@ -117,38 +97,8 @@ async function handleReceiveOffer({
         sdp: peer.localDescription,
     };
 
-    // await storeUsernameAndID();
-
     socket.emit('connection answer', payload);
 }
-
-
-// async function storeUsernameAndID() {
-//     const postDetails = {
-//         method: 'POST',
-//         headers: {
-//             "Content-Type": "application/json"
-//         }, body: JSON.stringify({
-//             userID: thisUserID
-//         })
-//     };
-
-//     // await fetch('/add-username-id-pair', postDetails);
-//     // await postResponse.json();
-
-//     const postResponse = await fetch('/add-username-id-pair', postDetails);
-//     const jsonData = await postResponse.json();
-//     let responsesStatus = jsonData.status; // Post owner userID
-
-//     if (responsesStatus == "Success") {
-//         console.log("SUCCESS")
-//         // document.getElementById("thisUsername").innerHTML = "Welcome, " + jsonData.username;
-//         // localStorage.setItem("USER", jsonData.username);
-//     } else {
-//         console.log("FAIL")
-//     }
-// }
-
 
 
 function handleAnswer({
@@ -207,16 +157,17 @@ toggleButton.addEventListener('click', () => {
     }
 });
 
-remoteVideoContainer.addEventListener('click', (e) => {
-    console.log("remoteVideoContainer CLICKED")
-    if (e.target.innerHTML.includes('Hide')) {
-        e.target.innerHTML = 'show remote cam';
-        socket.emit('hide remote cam', e.target.getAttribute('user-id'));
-    } else {
-        e.target.innerHTML = `Hide user's cam`;
-        socket.emit('show remote cam', e.target.getAttribute('user-id'));
-    }
-})
+// REMOVE THIS ???
+// remoteVideoContainer.addEventListener('click', (e) => {
+//     console.log("remoteVideoContainer CLICKED")
+//     if (e.target.innerHTML.includes('Hide')) {
+//         e.target.innerHTML = 'show remote cam';
+//         socket.emit('hide remote cam', e.target.getAttribute('user-id'));
+//     } else {
+//         e.target.innerHTML = `Hide user's cam`;
+//         socket.emit('show remote cam', e.target.getAttribute('user-id'));
+//     }
+// })
 
 function hideCam() {
     const videoTrack = userStream.getTracks().find(track => track.kind === 'video');
@@ -260,8 +211,6 @@ async function init() {
 
         socket.emit('store-username-id', thisUsername);
 
-        // socket.emit('get-other-users');
-
         socket.on('all other users', (otherUsers) => callOtherUsers(otherUsers, stream));
 
         socket.on("connection offer", (payload) => handleReceiveOffer(payload, stream));
@@ -273,66 +222,16 @@ async function init() {
         socket.on('user disconnected', (userId) => handleDisconnect(userId));
 
         socket.on('server is full', () => alert("chat is full"));
-
-        // socket.emit('get-other-users');
-
-        // socket.emit('get-all-users');
     });
 }
 getCurrentUser();
 init();
 
 
-// async function setupFunctions() {
-//     await init();
-//     showUsernames();
-// }
-// setupFunctions();
-
-// window.addEventListener("load", (event) => {
-//     console.log("page is fully loaded");
-// });
-
-// document.addEventListener("DOMContentLoaded", (event) => {
-//     console.log("page is fully loaded");
-//     console.log("TEST: " + test)
-//   });
-
-// function setupUsernames() {
-//     socket.emit('get-other-users');
-// }
-// setupUsernames();
 
 
-// window.addEventListener("DOMContentLoaded", (event) => {
-//     console.log("page is fully loaded");
-//     socket.emit('get-other-users');
-// });
 
 
-// window.addEventListener("DOMContentLoaded", (event) => {
-//     console.log("page is fully loaded");
-
-//     socket.emit('get-all-users');
-// });
-
-
-function showUsernames() {
-    socket.emit('get-other-users');
-    console.log("***END TEST")
-}
-
-// document.querySelector(".remote-video").onload = function() {
-//     console.log("VIDEOS LOADED")
-// }
-
-// document.querySelector(".remote-video").ready(function(){
-//     console.log("VIDEOS LOADED")
-//   })
-
-function getAllUsers() {
-    socket.emit('get-all-users');
-}
 
 var usernameAndIdsArray;
 socket.on("get-all-users", (usernameAndIds) => {
@@ -357,8 +256,6 @@ socket.on("user-connected-sound", (roomId) => {
     // Makes a ping sound whenever a user joins the room
     let connectSound = new Audio("../sounds/ping.mp3");
     connectSound.play();
-
-    // connectSound.pause();
 });
 
 
@@ -379,12 +276,10 @@ async function getCurrentUser() {
     const jsonData = await postResponse.json();
     let responsesStatus = jsonData.status;
 
-    console.log(JSON.stringify(jsonData))
+    // console.log(JSON.stringify(jsonData))
 
     if (responsesStatus == "Success") {
-        // document.getElementById("thisUsername").innerHTML = jsonData.username;
         thisUsername = jsonData.username;
-        // socket.emit('username-connected', thisUsername, roomId);
     }
 }
 // getCurrentUser();
@@ -405,79 +300,37 @@ socket.on("store-username-id", (username, id) => {
     console.log(id)
 });
 
-var test;
-socket.on("get-other-users", (usernameAndIds) => {
-    console.log("GET OTHERS CLIENT");
-    console.log(usernameAndIds)
 
-    console.log("THIS USER ID: " + thisUserID)
-    console.log("THIS USER NAME: " + thisUsername)
+socket.on("get-other-users", (usernameAndIds) => {
 
     usernameAndIds.forEach(user => {
-        console.log("ELEMENT: " + JSON.stringify(user))
+        // console.log("ELEMENT: " + JSON.stringify(user))
         // console.log("ELEMENT2: " + user.username)
         // console.log("ELEMENT3: " + user.ID)
 
         let currUserID = user.ID;
-
         let parID = String("username" + currUserID);
-        console.log("ID: " + parID)
-
-        // let currPar = document.getElementById("username" + currUserID);
         let currPar = document.getElementById(parID);
-
-        // console.log("ELEM: " + JSON.stringify(document.getElementById(parID)));
-        // console.log("ELEM2: " + JSON.stringify(document.getElementById(currUserID)));
-        console.log("ELEM: " + document.getElementById(parID));
-        console.log("ELEM2: " + document.getElementById(currUserID));
-        console.log("ELEM3: " + document.getElementById("toggle-cam"));
 
         // Get element with this ID and change text content
         if (currPar != null) {
             document.getElementById("username" + currUserID).textContent = user.username;
-            console.log("NOT NULL: " + user.username);
+
         } else {
-            console.log("NULL");
             document.getElementById("hostUsername").textContent = user.username;
         }
-
-        test = JSON.stringify(document.getElementById(currUserID))
-
-
-
-        // Button (doesn't click)
-        // let userBtn = document.createElement("button");
-        // userBtn.textContent = user.username;
-        // userBtn.id = "button" + user.ID;
-        // userBtn.setAttribute("onclick", "messageThisUser(" + user.ID + ")");
-        // document.body.appendChild(userBtn);
     })
 });
 
 
-function messageThisUser(userID) {
-    console.log("ID: " + userID);
-}
-
-
-
-
-
-
-
 // Wait 1 second before showing usernames to make sure the elements have loaded onto the page firsst
-window.onload = setTimeout(waitLoad, 1000)
+window.onload = setTimeout(waitPageLoad, 1000)
 
-function waitLoad() {
-    console.log("LOADED")
-    // alert("Loaded!")
-    showUsernames();
-
-    // document.write("This page is loaded now!")
+function waitPageLoad() {
+    // showUsernames();
+    socket.emit('get-other-users');
 };
 
-
-//    window.onload = setInterval(function(){
-//     alert("Loaded!")
-//     document.write("This page is loaded now!")
-//    }, 3000);
+// function showUsernames() {
+//     socket.emit('get-other-users');
+// }
