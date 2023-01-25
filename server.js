@@ -377,7 +377,6 @@ app.post("/get-current-username", function (req, res) {
 
 app.post('/authenticate', (req, res) => {
 
-    // User.findOne({username: req.body.username, password: req.body.password})
     User.findOne({username: req.body.username})
         .then((data) => {
             if (!data) {
