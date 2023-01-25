@@ -157,18 +157,8 @@ toggleButton.addEventListener('click', () => {
     }
 });
 
-// REMOVE THIS ???
-// remoteVideoContainer.addEventListener('click', (e) => {
-//     console.log("remoteVideoContainer CLICKED")
-//     if (e.target.innerHTML.includes('Hide')) {
-//         e.target.innerHTML = 'show remote cam';
-//         socket.emit('hide remote cam', e.target.getAttribute('user-id'));
-//     } else {
-//         e.target.innerHTML = `Hide user's cam`;
-//         socket.emit('show remote cam', e.target.getAttribute('user-id'));
-//     }
-// })
 
+// Handles turning on/off camera
 function hideCam() {
     const videoTrack = userStream.getTracks().find(track => track.kind === 'video');
     videoTrack.enabled = false;
@@ -195,7 +185,7 @@ toggleMicBtn.addEventListener('click', () => {
 async function init() {
     console.log("START INIT")
     socket.on('connect', async () => {
-        console.log("CONNECT INIT")
+        // console.log("CONNECT INIT")
         const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
@@ -231,18 +221,10 @@ init();
 
 
 
-
-
 var usernameAndIdsArray;
 socket.on("get-all-users", (usernameAndIds) => {
-    console.log("GET ALL CLIENT");
-    console.log(usernameAndIds)
-
     usernameAndIdsArray = usernameAndIds;
-
-    console.log("USER/ID ARRAY: " + JSON.stringify(usernameAndIdsArray))
 });
-// getAllUsers();
 
 document.getElementById("leaveCallBtn").addEventListener("click", () => {
     window.location.replace("/main");
@@ -251,7 +233,7 @@ document.getElementById("leaveCallBtn").addEventListener("click", () => {
 
 // When a user connects to the message page
 socket.on("user-connected-sound", (roomId) => {
-    console.log("CONNECTED SOUND CLIENT");
+    // console.log("CONNECTED SOUND CLIENT");
 
     // Makes a ping sound whenever a user joins the room
     let connectSound = new Audio("../sounds/ping.mp3");
@@ -262,7 +244,7 @@ socket.on("user-connected-sound", (roomId) => {
 
 var thisUsername;
 async function getCurrentUser() {
-    console.log("GET CURRENT USER")
+    // console.log("GET CURRENT USER")
 
     const postDetails = {
         method: 'POST',
@@ -276,17 +258,15 @@ async function getCurrentUser() {
     const jsonData = await postResponse.json();
     let responsesStatus = jsonData.status;
 
-    // console.log(JSON.stringify(jsonData))
-
     if (responsesStatus == "Success") {
         thisUsername = jsonData.username;
     }
 }
-// getCurrentUser();
 
+// Display message when user connects
 socket.on("username-connected", (username) => {
-    console.log("CONNECTED USERNAME CLIENT");
-    console.log(username)
+    // console.log("CONNECTED USERNAME CLIENT");
+    // console.log(username)
 
     let pName = document.createElement("p");
     pName.textContent = username + " has joined the call.";
@@ -304,10 +284,6 @@ socket.on("store-username-id", (username, id) => {
 socket.on("get-other-users", (usernameAndIds) => {
 
     usernameAndIds.forEach(user => {
-        // console.log("ELEMENT: " + JSON.stringify(user))
-        // console.log("ELEMENT2: " + user.username)
-        // console.log("ELEMENT3: " + user.ID)
-
         let currUserID = user.ID;
         let parID = String("username" + currUserID);
         let currPar = document.getElementById(parID);
@@ -327,10 +303,6 @@ socket.on("get-other-users", (usernameAndIds) => {
 window.onload = setTimeout(waitPageLoad, 1000)
 
 function waitPageLoad() {
-    // showUsernames();
+    // Show usernames
     socket.emit('get-other-users');
 };
-
-// function showUsernames() {
-//     socket.emit('get-other-users');
-// }
