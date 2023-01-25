@@ -15,9 +15,9 @@ const {
 
 app.use(express.json());
 
-const path = require('path');
+// const path = require('path');
 
-const User = require('./src/models/model')
+const User = require('./src/models/user')
 // const User = require('./src/models/model')();
 
 require('./src/db/mongoose')
@@ -90,8 +90,6 @@ app.get("/main", function (req, res) {
 
 
 app.get('/room/:roomId', (req, res) => {
-    // res.sendFile(`${__dirname}/public/html/room.html`);
-
     if (req.session.loggedIn) {
         res.sendFile(`${__dirname}/public/html/room.html`);
     } else {
@@ -115,21 +113,21 @@ app.get("/message", function (req, res) {
 
 
 
-var usernameIdPairs = new Map();
-app.post('/add-username-id-pair', (req, res) => {
-    let userID = req.body.userID;
-    console.log("USER ID: " + userID)
+// var usernameIdPairs = new Map();
+// app.post('/add-username-id-pair', (req, res) => {
+//     let userID = req.body.userID;
+//     console.log("USER ID: " + userID)
 
-    // Store values in map
-    // usernameIdPairs.set(userID, req.session.username);
-    usernameIdPairs[userID] = req.session.username;
+//     // Store values in map
+//     // usernameIdPairs.set(userID, req.session.username);
+//     usernameIdPairs[userID] = req.session.username;
     
-    console.log("MAP: " + JSON.stringify(usernameIdPairs))
+//     console.log("MAP: " + JSON.stringify(usernameIdPairs))
    
-    res.send({
-        status: "Success"
-    });
-})
+//     res.send({
+//         status: "Success"
+//     });
+// })
 
 
 // var users = [];
@@ -267,39 +265,40 @@ io.on('connection', socket => {
     socket.join(socket.user);  // Connect user to socket
 
 
-    socket.on('call', (data) => {
-        let callee = data.name;
-        let rtcMessage = data.rtcMessage;
+    // socket.on('call', (data) => {
+    //     let callee = data.name;
+    //     let rtcMessage = data.rtcMessage;
 
-        socket.to(callee).emit("newCall", {
-            caller: socket.user,
-            rtcMessage: rtcMessage
-        })
+    //     socket.to(callee).emit("newCall", {
+    //         caller: socket.user,
+    //         rtcMessage: rtcMessage
+    //     })
 
-    })
+    // })
 
-    socket.on('answerCall', (data) => {
-        let caller = data.caller;
-        rtcMessage = data.rtcMessage
+    // socket.on('answerCall', (data) => {
+    //     let caller = data.caller;
+    //     rtcMessage = data.rtcMessage
 
-        socket.to(caller).emit("callAnswered", {
-            callee: socket.user,
-            rtcMessage: rtcMessage
-        })
+    //     socket.to(caller).emit("callAnswered", {
+    //         callee: socket.user,
+    //         rtcMessage: rtcMessage
+    //     })
 
-    })
+    // })
 
-    socket.on('ICEcandidate', (data) => {
-        let otherUser = data.user;
-        let rtcMessage = data.rtcMessage;
+    // socket.on('ICEcandidate', (data) => {
+    //     let otherUser = data.user;
+    //     let rtcMessage = data.rtcMessage;
 
-        socket.to(otherUser).emit("ICEcandidate", {
-            sender: socket.user,
-            rtcMessage: rtcMessage
-        })
-    })
+    //     socket.to(otherUser).emit("ICEcandidate", {
+    //         sender: socket.user,
+    //         rtcMessage: rtcMessage
+    //     })
+    // })
 
 
+    // For messaging everyone feature
     socket.on('send message', (msg) => {
         console.log('message: ' + msg);
         io.emit('send message', msg);
@@ -317,17 +316,17 @@ io.on('connection', socket => {
         io.emit("a-user-connects", username);
     });
 
-    socket.on("send-message-to-other-user", function (data) {
-        // send event to userReceiving
-        var socketId = users[data.userReceiving];
+    // socket.on("send-message-to-other-user", function (data) {
+    //     // send event to userReceiving
+    //     var socketId = users[data.userReceiving];
 
-        io.to(socketId).emit("new-message-from-other-user", data);
-    });
+    //     io.to(socketId).emit("new-message-from-other-user", data);
+    // });
 
 
     socket.on("user-connected-sound", (roomId) => {
-        console.log("CONNECTED SOUND SERVER");
-        console.log("ROOM: " + roomId);
+        // console.log("CONNECTED SOUND SERVER");
+        // console.log("ROOM: " + roomId);
 
         io.to(roomId).emit("user-connected-sound", roomId);
     });

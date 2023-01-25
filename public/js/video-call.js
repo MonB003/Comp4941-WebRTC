@@ -17,7 +17,8 @@ function callOtherUsers(otherUsers, stream) {
     otherUsers.forEach(userIdToCall => {
         const peer = createPeer(userIdToCall);
         peers[userIdToCall] = peer;
-        thisUserID = userIdToCall;
+        // thisUserID = userIdToCall;
+        // console.log("THIS USER ID: " + thisUserID)
 
         stream.getTracks().forEach(track => {
             peer.addTrack(track, stream);
@@ -57,7 +58,8 @@ function createPeer(userIdToCall) {
             pUsername.setAttribute("class", "remote-username");
             container.appendChild(pUsername);
            
-            thisUserID = userIdToCall;
+            // thisUserID = userIdToCall;
+            // console.log("THIS USER ID 2: " + thisUserID)
         }
     }
     return peer;
@@ -276,12 +278,18 @@ socket.on("username-connected", (username) => {
 
 socket.on("store-username-id", (username, id) => {
     console.log("STORE USERNAME ID");
-    console.log(username)
-    console.log(id)
+    // console.log(username)
+    // console.log(id)
+    thisUsername = username;
+    thisUserID = id;
+    console.log(thisUsername + " ; " + thisUserID)
+
+    document.getElementById("hostUsername").textContent = thisUsername;
 });
 
 
 socket.on("get-other-users", (usernameAndIds) => {
+    // console.log("GET OTHER USERS")
 
     usernameAndIds.forEach(user => {
         let currUserID = user.ID;
