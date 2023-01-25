@@ -13,12 +13,10 @@ let thisUserID = null;
 
 
 function callOtherUsers(otherUsers, stream) {
-    console.log("CALL OTHER USERS")
+    // console.log("CALL OTHER USERS")
     otherUsers.forEach(userIdToCall => {
         const peer = createPeer(userIdToCall);
         peers[userIdToCall] = peer;
-        // thisUserID = userIdToCall;
-        // console.log("THIS USER ID: " + thisUserID)
 
         stream.getTracks().forEach(track => {
             peer.addTrack(track, stream);
@@ -27,7 +25,7 @@ function callOtherUsers(otherUsers, stream) {
 }
 
 function createPeer(userIdToCall) {
-    console.log("CREATE PEER")
+    // console.log("CREATE PEER")
     const peer = new RTCPeerConnection({
         iceServers: [{
             urls: "stun:stun.stunprotocol.org"
@@ -39,7 +37,7 @@ function createPeer(userIdToCall) {
 
         // Check if the user's video element does not exist (hasn't been appended to the page)
         if (document.getElementById(userIdToCall) == null) {
-            console.log("ON TRACK")
+            // console.log("ON TRACK")
             const container = document.createElement('div');
             container.classList.add('remote-video-container');
             
@@ -57,16 +55,13 @@ function createPeer(userIdToCall) {
             // pUsername.setAttribute("id", "username" + userIdToCall);
             // pUsername.setAttribute("class", "remote-username");
             // container.appendChild(pUsername);
-           
-            // thisUserID = userIdToCall;
-            // console.log("THIS USER ID 2: " + thisUserID)
         }
     }
     return peer;
 }
 
 async function handleNegotiationNeededEvent(peer, userIdToCall) {
-    console.log("HANDLE NEGOTIATION NEEDED EVENT")
+    // console.log("HANDLE NEGOTIATION NEEDED EVENT")
     const offer = await peer.createOffer();
     await peer.setLocalDescription(offer);
     const payload = {
@@ -81,7 +76,7 @@ async function handleReceiveOffer({
     sdp,
     callerId
 }, stream) {
-    console.log("HANDLE RECEIVE OFFER")
+    // console.log("HANDLE RECEIVE OFFER")
     const peer = createPeer(callerId);
     peers[callerId] = peer;
     const desc = new RTCSessionDescription(sdp);
@@ -107,13 +102,13 @@ function handleAnswer({
     sdp,
     answererId
 }) {
-    console.log("HANDLE ANSwER")
+    // console.log("HANDLE ANSwER")
     const desc = new RTCSessionDescription(sdp);
     peers[answererId].setRemoteDescription(desc).catch(e => console.log(e));
 }
 
 function handleICECandidateEvent(e) {
-    console.log("HANDLE ICE CAND EVENT")
+    // console.log("HANDLE ICE CAND EVENT")
     if (e.candidate) {
         Object.keys(peers).forEach(id => {
             const payload = {
@@ -129,13 +124,13 @@ function handleReceiveIce({
     candidate,
     from
 }) {
-    console.log("HANDLE RECEIVE ICE")
+    // console.log("HANDLE RECEIVE ICE")
     const inComingCandidate = new RTCIceCandidate(candidate);
     peers[from].addIceCandidate(inComingCandidate);
 };
 
 function handleDisconnect(userId) {
-    console.log("HANDLE DISCONNECT")
+    // console.log("HANDLE DISCONNECT")
 
     // let pName = document.createElement("p");
     // pName.textContent = thisUsername + " has left the call.";
@@ -189,7 +184,7 @@ toggleMicBtn.addEventListener('click', () => {
 });
 
 async function init() {
-    console.log("START INIT")
+    // console.log("START INIT")
     socket.on('connect', async () => {
         // console.log("CONNECT INIT")
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -281,7 +276,7 @@ socket.on("username-connected", (username) => {
 
 
 socket.on("store-username-id", (username, id) => {
-    console.log("STORE USERNAME ID");
+    // console.log("STORE USERNAME ID");
     // console.log(username)
     // console.log(id)
     thisUsername = username;

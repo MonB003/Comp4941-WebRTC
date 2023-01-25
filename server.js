@@ -224,6 +224,31 @@ io.on('connection', socket => {
             io.to(roomId).emit("get-all-users", usernameAndIds);
         });
 
+
+
+        socket.on('disconnecting', () => {
+            // console.log("ROOM SIZE: " + room.size)
+            if (room && room.size > 1) {
+                console.log("ROOM SIZE: " + room.size)
+                console.log("ROOM: " + JSON.stringify(room))
+            } else {
+                console.log("NO USERS IN ROOM")
+                // console.log("ROOM SIZE: " + room.size)
+                console.log("ROOM: " + JSON.stringify(room))
+                console.log("ALL CALL IDS: " + allCallsIDs)
+
+                let roomIdIndex = allCallsIDs.indexOf(roomId);
+                console.log("ROOM INDEX: " + roomIdIndex)
+                allCallsIDs.splice(roomIdIndex, 1);
+                console.log("ALL CALL IDS: " + allCallsIDs)
+
+            }
+            // socket.disconnect();
+            socket.rooms.forEach(room => {
+                socket.to(room).emit('user disconnected', socket.id);
+            });
+        });
+
     });
 
     socket.on('peer connection request', ({
@@ -257,11 +282,12 @@ io.on('connection', socket => {
         });
     });
 
-    socket.on('disconnecting', () => {
-        socket.rooms.forEach(room => {
-            socket.to(room).emit('user disconnected', socket.id);
-        });
-    });
+    // socket.on('disconnecting', () => {
+    //     socket.rooms.forEach(room => {
+    //         socket.to(room).emit('user disconnected', socket.id);
+    //     });
+    //     // console.log("ROOM SIZE: " + room.size)
+    // });
 
 
 
