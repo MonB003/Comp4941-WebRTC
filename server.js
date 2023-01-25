@@ -141,6 +141,7 @@ var MAX_USERS = 10;
 /* SOCKET CONNECTION FOR RTC */
 io.on('connection', socket => {
     socket.on('user joined room', roomId => {
+        
         const room = io.sockets.adapter.rooms.get(roomId);
         console.log("ROOM: " + JSON.stringify(room))
         console.log("ROOM ID: " + roomId)
@@ -155,6 +156,8 @@ io.on('connection', socket => {
 
         console.log("SOCKET JOINED: " + socket.id)
         // console.log("SOCKET: " + socket)
+
+        // console.log("ROOM ENTRIES: " + io.sockets.adapter.rooms.get(roomId).entries)
 
         if (room && room.size === MAX_USERS) {
             socket.emit('server is full');
@@ -308,13 +311,13 @@ io.on('connection', socket => {
 
 
 
-    socket.on("a-user-connects", function (username) {
-        // Save in array
-        users[username] = socket.id;
+    // socket.on("a-user-connects", function (username) {
+    //     // Save in array
+    //     users[username] = socket.id;
 
-        // socket ID will be used to send message to individual person
-        io.emit("a-user-connects", username);
-    });
+    //     // socket ID will be used to send message to individual person
+    //     io.emit("a-user-connects", username);
+    // });
 
     // socket.on("send-message-to-other-user", function (data) {
     //     // send event to userReceiving

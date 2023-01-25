@@ -53,10 +53,10 @@ function createPeer(userIdToCall) {
             container.id = userIdToCall;
             remoteVideoContainer.appendChild(container);
 
-            const pUsername = document.createElement("p");
-            pUsername.setAttribute("id", "username" + userIdToCall);
-            pUsername.setAttribute("class", "remote-username");
-            container.appendChild(pUsername);
+            // const pUsername = document.createElement("p");
+            // pUsername.setAttribute("id", "username" + userIdToCall);
+            // pUsername.setAttribute("class", "remote-username");
+            // container.appendChild(pUsername);
            
             // thisUserID = userIdToCall;
             // console.log("THIS USER ID 2: " + thisUserID)
@@ -136,6 +136,10 @@ function handleReceiveIce({
 
 function handleDisconnect(userId) {
     console.log("HANDLE DISCONNECT")
+
+    // let pName = document.createElement("p");
+    // pName.textContent = thisUsername + " has left the call.";
+    // document.getElementById("allMessages").appendChild(pName);
 
     delete peers[userId];
 
@@ -282,9 +286,9 @@ socket.on("store-username-id", (username, id) => {
     // console.log(id)
     thisUsername = username;
     thisUserID = id;
-    console.log(thisUsername + " ; " + thisUserID)
+    // console.log(thisUsername + " ; " + thisUserID)
 
-    document.getElementById("hostUsername").textContent = thisUsername;
+    // document.getElementById("hostUsername").textContent = thisUsername;
 });
 
 
@@ -308,9 +312,9 @@ socket.on("get-other-users", (usernameAndIds) => {
 
 
 // Wait 1 second before showing usernames to make sure the elements have loaded onto the page firsst
-window.onload = setTimeout(waitPageLoad, 1000)
+// window.onload = setTimeout(waitPageLoad, 1000)
 
-function waitPageLoad() {
-    // Show usernames
-    socket.emit('get-other-users');
-};
+// function waitPageLoad() {
+//     // Show usernames
+//     socket.emit('get-other-users');
+// };
