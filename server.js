@@ -136,7 +136,8 @@ var otherUsers = [];
 var allSocketUsers = [];
 
 var allCallsIDs = [];
-var MAX_USERS = 10;
+// var MAX_USERS = 10;
+var MAX_USERS = 30;
 
 /* SOCKET CONNECTION FOR RTC */
 io.on('connection', socket => {
