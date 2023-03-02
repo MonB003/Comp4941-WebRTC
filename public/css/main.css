@@ -111,10 +111,12 @@ a.lbutton a:hover, a:active {
 
 #createBtn, #messagingBtn {
     min-width: 200px;
+    min-height: 45px;
 }
 
 #logoutBtn {
     min-width: 100px;
+    min-height: 45px;
 }
 
 
