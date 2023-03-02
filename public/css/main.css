@@ -101,3 +101,43 @@ a.lbutton a:hover, a:active {
     background-color: rgba(229, 229, 224, 1);
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.3);
 }
+
+
+
+/* SMALLEST SCREEN */
+#box {
+    min-width: 300px;
+}
+
+#createBtn, #messagingBtn {
+    min-width: 200px;
+}
+
+#logoutBtn {
+    min-width: 100px;
+}
+
+
+
+/* PHONES */
+@media only screen and (max-width: 900px) {
+    #box {
+        width: 50vw;
+    }
+
+    .container, #create-btn {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #create-btn {
+        text-decoration: none;
+    }
+
+    #createBtn, #messagingBtn {
+        width: 50%;
+        padding: 0;
+    }
+}

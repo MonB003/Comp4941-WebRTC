@@ -57,3 +57,9 @@ button {
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.7);
     align-self: center;
 }
+
+
+
+body {
+    min-width: 550px;
+}

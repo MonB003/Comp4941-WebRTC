@@ -130,3 +130,9 @@ button {
     color: white;
     float: left;
 }
+
+
+
+body {
+    min-width: 550px;
+}

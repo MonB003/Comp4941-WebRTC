@@ -80,3 +80,12 @@ button, #backToLogin {
     justify-content: center;
     align-items: center;
 }
+
+
+
+/* PHONES */
+@media only screen and (max-width: 900px) {
+    form, #loginDiv {
+        width: auto;
+    }
+}
