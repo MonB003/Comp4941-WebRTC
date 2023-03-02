@@ -36,3 +36,5 @@ node server.js
 * Video reference: https://www.youtube.com/watch?v=Uk5DbEnFNP0
 * Code reference: https://github.com/coding-with-chaim/toggle-cam-final
 * Sound effect (ping): https://pixabay.com/sound-effects/search/ping/
+
+This project is a continuation of: https://github.com/SheyBarpagga/3940WebRTC
