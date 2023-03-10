@@ -6,4 +6,4 @@ const uri = 'mongodb+srv://admin:1HoY7VICevfUI4KI@cluster0.i1ubgrw.mongodb.net/W
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
-})
+}) 
