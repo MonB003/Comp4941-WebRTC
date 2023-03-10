@@ -70,7 +70,7 @@ app.get('/signup', function (req, res) {
     res.send(signupDOM.serialize());
 });
 
-
+ 
 // When user successfully logs in
 app.get("/main", function (req, res) {
 
