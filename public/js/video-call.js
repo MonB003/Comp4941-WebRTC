@@ -13,31 +13,38 @@ let thisUserID = null;
 
 
 function callOtherUsers(otherUsers, stream) {
-    // console.log("CALL OTHER USERS")
+    // Add each of the others user's videos to the screen
     otherUsers.forEach(userIdToCall => {
-        const peer = createPeer(userIdToCall);
-        peers[userIdToCall] = peer;
+        const peer = createPeer(userIdToCall); // Create a peer connection
+        peers[userIdToCall] = peer;     // Store user's ID in the peers array
 
         stream.getTracks().forEach(track => {
+            // Add new media track to the set of tracks passed to the other peers
             peer.addTrack(track, stream);
         });
     });
 }
 
+// Creates a peer connection
 function createPeer(userIdToCall) {
-    // console.log("CREATE PEER")
+    // Creates a WebRTC connection between the local computer and a remote peer
     const peer = new RTCPeerConnection({
-        iceServers: [{
-            urls: "stun:stun.stunprotocol.org"
+        iceServers: [{ 
+            urls: "stun:stun.stunprotocol.org"  // STUN server
         }]
     });
-    peer.onnegotiationneeded = () => userIdToCall ? handleNegotiationNeededEvent(peer, userIdToCall) : null;
-    peer.onicecandidate = handleICECandidateEvent;
-    peer.ontrack = (e) => {
 
+    // When connection negotiation through the signaling channel is required
+    peer.onnegotiationneeded = () => userIdToCall ? handleNegotiationNeededEvent(peer, userIdToCall) : null;
+
+    // When an RTCIceCandidate has been identified and added to the local peer
+    peer.onicecandidate = handleICECandidateEvent;
+
+    // Event handler on RTCPeerConnection after a new track has been added
+    peer.ontrack = (e) => {
         // Check if the user's video element does not exist (hasn't been appended to the page)
         if (document.getElementById(userIdToCall) == null) {
-            // console.log("ON TRACK")
+            // Create video element of the user
             const container = document.createElement('div');
             container.classList.add('remote-video-container');
             
@@ -50,20 +57,19 @@ function createPeer(userIdToCall) {
             container.appendChild(video);
             container.id = userIdToCall;
             remoteVideoContainer.appendChild(container);
-
-            // const pUsername = document.createElement("p");
-            // pUsername.setAttribute("id", "username" + userIdToCall);
-            // pUsername.setAttribute("class", "remote-username");
-            // container.appendChild(pUsername);
         }
     }
+
+    // Return the created peer (WebRTC connection)
     return peer;
 }
 
+// Handle negotiation and create an offer
 async function handleNegotiationNeededEvent(peer, userIdToCall) {
-    // console.log("HANDLE NEGOTIATION NEEDED EVENT")
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
+    const offer = await peer.createOffer();     // Create SDP offer for starting a new WebRTC connection to a remote peer
+    await peer.setLocalDescription(offer);      // Description specifies the properties of the local end of the connection
+    
+    // Offer information
     const payload = {
         sdp: peer.localDescription,
         userIdToCall,
@@ -72,23 +78,26 @@ async function handleNegotiationNeededEvent(peer, userIdToCall) {
     socket.emit('peer connection request', payload);
 }
 
+// Receive the offer
 async function handleReceiveOffer({
     sdp,
     callerId
 }, stream) {
-    // console.log("HANDLE RECEIVE OFFER")
-    const peer = createPeer(callerId);
-    peers[callerId] = peer;
-    const desc = new RTCSessionDescription(sdp);
-    await peer.setRemoteDescription(desc);
+
+    const peer = createPeer(callerId);  // Create peer
+    peers[callerId] = peer;     // Store in the array of all peers in the call
+    const desc = new RTCSessionDescription(sdp);    // Setup one end of a connection and it's configuration
+    await peer.setRemoteDescription(desc);      // Set the specified session description as the remote peer’s current offer
 
     stream.getTracks().forEach(track => {
+        // Add new media track to the set of tracks passed to the other peers
         peer.addTrack(track, stream);
     });
 
-    const answer = await peer.createAnswer();
-    await peer.setLocalDescription(answer);
+    const answer = await peer.createAnswer();   // Create an answer to the offer
+    await peer.setLocalDescription(answer);     // Description specifies the properties of the local end of the connection
 
+    // Answer information
     const payload = {
         userToAnswerTo: callerId,
         sdp: peer.localDescription,
@@ -98,19 +107,23 @@ async function handleReceiveOffer({
 }
 
 
+// Handle the answer
 function handleAnswer({
     sdp,
     answererId
 }) {
-    // console.log("HANDLE ANSwER")
-    const desc = new RTCSessionDescription(sdp);
-    peers[answererId].setRemoteDescription(desc).catch(e => console.log(e));
+
+    const desc = new RTCSessionDescription(sdp);    // Setup one end of a connection and it's configuration
+    peers[answererId].setRemoteDescription(desc).catch(e => console.log(e));     // Set specified session description as remote peer’s current answer
 }
 
+// ICE candidate event
 function handleICECandidateEvent(e) {
-    // console.log("HANDLE ICE CAND EVENT")
+    // Check for an existing candidate
     if (e.candidate) {
+        // Loop through each peer's ID (key in the key/value pair)
         Object.keys(peers).forEach(id => {
+            // Stores who is sending and receiving
             const payload = {
                 target: id,
                 candidate: e.candidate,
@@ -120,25 +133,21 @@ function handleICECandidateEvent(e) {
     }
 }
 
+// Receive ICE candidate
 function handleReceiveIce({
     candidate,
     from
 }) {
-    // console.log("HANDLE RECEIVE ICE")
-    const inComingCandidate = new RTCIceCandidate(candidate);
-    peers[from].addIceCandidate(inComingCandidate);
+    const inComingCandidate = new RTCIceCandidate(candidate); // Ice candidate used to establish an RTCPeerConnection
+    peers[from].addIceCandidate(inComingCandidate);     // Adds this new remote candidate to the RTCPeerConnection's remote description
 };
 
+// When a user disconnects
 function handleDisconnect(userId) {
-    // console.log("HANDLE DISCONNECT")
+    // Remove user from the peers array
+    delete peers[userId];  
 
-    // let pName = document.createElement("p");
-    // pName.textContent = thisUsername + " has left the call.";
-    // document.getElementById("allMessages").appendChild(pName);
-
-    delete peers[userId];
-
-    // Remove div element
+    // Remove div element from the page
     document.getElementById(userId).remove();
 
     // Remove video element
@@ -150,9 +159,11 @@ function handleDisconnect(userId) {
 toggleButton.addEventListener('click', () => {
     const videoTrack = userStream.getTracks().find(track => track.kind === 'video');
     if (videoTrack.enabled) {
+        // Turn camera off
         videoTrack.enabled = false;
         toggleButton.innerHTML = 'Show cam'
     } else {
+        // Turn camera on
         videoTrack.enabled = true;
         toggleButton.innerHTML = "Hide cam"
     }
@@ -175,24 +186,29 @@ function showCam() {
 toggleMicBtn.addEventListener('click', () => {
     const audioTrack = userStream.getTracks().find(track => track.kind === 'audio');
     if (audioTrack.enabled) {
+        // Turn mic off
         audioTrack.enabled = false;
         toggleMicBtn.innerHTML = 'Turn on mic'
     } else {
+        // Turn mic on
         audioTrack.enabled = true;
         toggleMicBtn.innerHTML = "Turn off mic"
     }
 });
 
+
+
+// Initial setup when the page is loaded
 async function init() {
-    // console.log("START INIT")
     socket.on('connect', async () => {
-        // console.log("CONNECT INIT")
+        // Setup camera and microphone through prompting user for permission to access their video/audio
         const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
         });
+
         userStream = stream;
-        userVideo.srcObject = stream;
+        userVideo.srcObject = stream;   // Setup user's video on the page
 
         socket.emit('user joined room', roomId);
 
@@ -234,8 +250,6 @@ document.getElementById("leaveCallBtn").addEventListener("click", () => {
 
 // When a user connects to the message page
 socket.on("user-connected-sound", (roomId) => {
-    // console.log("CONNECTED SOUND CLIENT");
-
     // Makes a ping sound whenever a user joins the room
     let connectSound = new Audio("../sounds/ping.mp3");
     connectSound.play();
@@ -245,8 +259,6 @@ socket.on("user-connected-sound", (roomId) => {
 
 var thisUsername;
 async function getCurrentUser() {
-    // console.log("GET CURRENT USER")
-
     const postDetails = {
         method: 'POST',
         headers: {
@@ -266,9 +278,6 @@ async function getCurrentUser() {
 
 // Display message when user connects
 socket.on("username-connected", (username) => {
-    // console.log("CONNECTED USERNAME CLIENT");
-    // console.log(username)
-
     let pName = document.createElement("p");
     pName.textContent = username + " has joined the call.";
     document.getElementById("allMessages").appendChild(pName);
@@ -276,20 +285,12 @@ socket.on("username-connected", (username) => {
 
 
 socket.on("store-username-id", (username, id) => {
-    // console.log("STORE USERNAME ID");
-    // console.log(username)
-    // console.log(id)
     thisUsername = username;
     thisUserID = id;
-    // console.log(thisUsername + " ; " + thisUserID)
-
-    // document.getElementById("hostUsername").textContent = thisUsername;
 });
 
 
 socket.on("get-other-users", (usernameAndIds) => {
-    // console.log("GET OTHER USERS")
-
     usernameAndIds.forEach(user => {
         let currUserID = user.ID;
         let parID = String("username" + currUserID);
@@ -304,12 +305,3 @@ socket.on("get-other-users", (usernameAndIds) => {
         }
     })
 });
-
-
-// Wait 1 second before showing usernames to make sure the elements have loaded onto the page firsst
-// window.onload = setTimeout(waitPageLoad, 1000)
-
-// function waitPageLoad() {
-//     // Show usernames
-//     socket.emit('get-other-users');
-// };

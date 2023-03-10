@@ -4,6 +4,7 @@ window.onload = function() {
 
     disableStopRecordBtn();
 
+    // When a user records their video
     navigator.mediaDevices.getUserMedia({ audio: true, video: true}).then(stream => {
         let mediaRecorder;
 
