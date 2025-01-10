@@ -1,6 +1,7 @@
 # Web RTC Video Conferencing
-[comment]: <> ## Hosted App
-[comment]: <> [Hosted App Link](https://webrtc-mb-4941.herokuapp.com/)
+
+<!--- ## Hosted App
+[Hosted App Link](https://webrtc-mb-4941.herokuapp.com/) -->
 
 ## Configuration instructions
 
